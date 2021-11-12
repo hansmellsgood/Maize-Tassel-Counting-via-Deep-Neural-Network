@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <title>Maize Tassel Counting Using Neural Network</title> 
+
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <link href="styles.css" rel="stylesheet">
+    </head>
+    <body>
+        <div class="wrapper">
+            <nav id="sidebar">
+                <div class="sidebar-header">
+                    <h3>Maize Tassel Counting Application</h3>
+                </div>
+                <ul class="list-unstyled components">
+                    <li>
+                        <a href="index.html" class="menuitem menubutton">About Us</a>
+                    </li>
+                    <li>
+                        <a href="user-manual.html" class="menuitem menubutton">User Manual</a>
+                    </li>
+                    <li>
+                        <a class="dropdown-toggle" href="#uploadsubmenu" data-bs-toggle="collapse" aria-expanded="true">Upload</a>
+                        <ul class="list-unstyled" id="uploadsubmenu">
+                            <li class="active">
+                                <a class="menuitem menubutton" href="upload-single.html">Single Image</a>
+                            </li>
+                            <li>
+                                <a class="menuitem menubutton" href="upload-multiple.html">Multiple Images</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="contact-us.html" class="menuitem menubutton">Contact Us</a>
+                    </li>
+
+                </ul>
+            </nav>
+
+
+
+            <div id="content">
+                <h4><b>Upload Single Image</b></h4>
+                <div class="hline"></div>
+                <div class="container">
+                    <div class="row">
+                        <form>
+                            <div class="form-group text-center">
+                            <input type="file" class="form-control-file" id="uploadsingle">
+                            </div>
+                        </form>
+                    </div>
+                    <br>
+                    <div class="row p-3">
+                        <div class="col-md-6 mx-auto">
+                            <img src="sample-visual/T0006_XM_20120815160306_01.jpg" class="img-fluid img-force center-block" alt="Responsive image">
+                        </div>
+                        <div class="col-md-6">
+                            <div class="gap-2 col-6 btn-group-vertical">
+                                <button class="btn btn-secondary" type="button">Count Maize Tassels</button>
+                                <button class="btn btn-secondary" type="button">Visualize with Density Map</button>
+                                <button class="btn btn-secondary" type="button">Visualize with Dot Annotations</button>
+                            </div>    
+                        </div>
+                    </div>
+
+                    <div class="row p-3">
+                        <div class="col-md-6 mx-auto">
+                            <img src="sample-visual/T0006_XM_20120815160306_01.jpg" class="img-fluid img-force center-block" alt="Responsive image">
+                        </div>
+                        <div class="col-md-6">
+                            <div class="col-6 btn btn-secondary" type="button">Download Image</div>
+                            <p>
+                                Count: xxx<br>
+                                Manual Count: xxx<br>
+                                MHE/MSE/R2/RMSE: xxx
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="line"></div>
+            </div>
+        </div>
+        <script src="js/bootstrap.bundle.min.js"></script>
+        <script>
+
+        </script>
+    </body>
+</html>
