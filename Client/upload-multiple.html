@@ -44,36 +44,92 @@
             <div id="content">
                 <h4><b>Upload Multiple Images</b></h4>
                 <div class="hline"></div>
-                <h5>Step 1:</h5>
-                <p>
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit, 
-                    sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-                    Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris 
-                    nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in 
-                    reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla 
-                    pariatur. Excepteur sint occaecat cupidatat non proident, sunt in 
-                    culpa qui officia deserunt mollit anim id est laborum.
-                </p>
-                <h5>Step 2:</h5>
-                <p>
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit, 
-                    sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-                    Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris 
-                    nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in 
-                    reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla 
-                    pariatur. Excepteur sint occaecat cupidatat non proident, sunt in 
-                    culpa qui officia deserunt mollit anim id est laborum.
-                </p>
-                <h5>Step 3:</h5>
-                <p>
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit, 
-                    sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-                    Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris 
-                    nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in 
-                    reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla 
-                    pariatur. Excepteur sint occaecat cupidatat non proident, sunt in 
-                    culpa qui officia deserunt mollit anim id est laborum.
-                </p>
+                <div class="container">
+                    <div class="row">
+                        <form>
+                            <div class="form-group text-center">
+                            <input type="file" class="form-control-file" id="uploadmultiple" multiple>
+                            </div>
+                        </form>
+                    </div>
+                    <br>
+                    <div class="row p-3">
+                        <div class="col-6 col-md-4 text-center">
+                            <img src="sample-visual/T0006_XM_20120815160306_01.jpg" class="img-fluid img-force" alt="Responsive image">
+                            <form class="text-center p-2">
+                                <label class="col-12" id="image1-text">Image 1</label>
+                                <input type="date" id="image1" name="image1-date" value="DD-MM-YYYY">
+                            </form>
+                        </div>
+                        <div class="col-6 col-md-4 text-center">
+                            <img src="sample-visual/T0006_XM_20120815160306_01.jpg" class="img-fluid img-force" alt="Responsive image">
+                            <form class="text-center p-2">
+                                <label class="col-12" id="image2-text">Image 2</label>
+                                <input type="date" id="image2" name="image2-date" value="DD-MM-YYYY">
+                            </form>
+                        </div>
+                        <div class="col-6 col-md-4 text-center">
+                            <img src="sample-visual/T0006_XM_20120815160306_01.jpg" class="img-fluid img-force" alt="Responsive image">
+                            <form class="text-center p-2">
+                                <label class="col-12" id="image3-text">Image 3</label>
+                                <input type="date" id="image3" name="image3-date" value="DD-MM-YYYY">
+                            </form>
+                        </div>
+                    </div>
+                    <div class="row p-1 text-center">
+                        <div class="col-md-12">
+                            <div class="gap-2 col-12 btn-group-horizontal">
+                                <button class="btn btn-secondary" type="button">Count Maize Tassels</button>
+                                <button class ="btn btn-secondary" type="button">Analyze Growth Rate</button>
+                                <button class="btn btn-secondary" type="button">Visualize with Density Map</button>
+                                <button class="btn btn-secondary" type="button">Visualize with Dot Annotations</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row p-3 text-center">
+                        <div class="col-md-0.5"></div>
+                        <div class="col-md-5 text-center">
+                            <label class="col-12 p-2" id="LinePlot-Display" name="LinePlot-Display"><B>Line Plot</B></label>
+                            <img src="sample-visual/lineplot.jpg" class="img-fluid img-force" alt="Responsive image">
+                        </div>
+                        <div class="col-md-1"></div>
+                        <div class="col-md-5 text-center">
+                            <label class="col-12 p-2" id="Histogram-Display" name="Histogram-Display"><B>Histogram</B></label>
+                            <img src="sample-visual/histogram.jpg" class="img-fluid img-force" alt="Responsive image">
+                        </div>
+                        <div class="col-md-0.5"></div>
+                    </div>
+                    <div class="row p-3 ">
+                        <div class="col-md-1">
+
+                        </div>
+                        <div class="col-md-10">
+                            <h6><u><b>Analysis Report</b></u></h6>
+                            <p>
+                                The growth rate can be<br>
+                                ...
+                            </p>
+                        </div>
+                        <div class="col-md-1">
+
+                        </div>
+                    </div>
+                    <!--
+                    <div class="row p-3">
+                        <div class="col-md-6 mx-auto">
+                            <img src="sample-visual/T0006_XM_20120815160306_01.jpg" class="img-fluid img-force center-block" alt="Responsive image">
+                        </div>
+                        <div class="col-md-6">
+                            <div class="col-6 btn btn-secondary" type="button">Download Image</div>
+                            <p>
+                                Count: xxx<br>
+                                Manual Count: xxx<br>
+                                MHE/MSE/R2/RMSE: xxx
+                            </p>
+                        </div>
+                    </div>
+                    -->
+                </div>
                 <div class="line"></div>
             </div>
         </div>
