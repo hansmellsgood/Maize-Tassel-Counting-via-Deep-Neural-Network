@@ -9,9 +9,12 @@ function SingleUpload() {
             <div className="container-fluid">
                 <div className="vertical-align-top content top p-3">
                     <h2 className="font-weight-light">Single Upload</h2>
+                    <hr/>
                         <DropZone />
-                    </div>
-                <div className="bottom">
+                </div>
+                <div className="vertical-align-top content bottom p-3">
+                    <h2 className="font-weight-light">Visualization</h2>
+                    <hr/>
                 </div>
             </div>
         </div>

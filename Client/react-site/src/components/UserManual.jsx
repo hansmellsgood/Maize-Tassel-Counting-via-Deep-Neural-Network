@@ -8,6 +8,7 @@ function UserManual() {
         <div className="container-fluid">
             <div className="align-items-center content p-3">
                 <h2 className="font-weight-light">User Manual</h2>
+                <hr/>
                 <div className="accordion-dimensions">
                     <Accordion>
                     <Accordion.Item eventKey="0">
