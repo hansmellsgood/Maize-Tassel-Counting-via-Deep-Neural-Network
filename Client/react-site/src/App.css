@@ -58,7 +58,7 @@ code {
   height: 50%;
 }
 
-.manual, .about, .contact, .upload {
+.manual, .about, .contact, .upload, .test{
   width: 100vw;
   height: 100vh;
 }

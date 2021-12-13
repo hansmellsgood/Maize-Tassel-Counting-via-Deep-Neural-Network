@@ -7,7 +7,8 @@ import {
   UserManual,
   ContactUs,
   SideBarNav,
-  SingleUpload
+  SingleUpload,
+  TestSpace
 } from "./components";
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
                   <Route path="/UserManual" element={<UserManual />} />
                   <Route path="/ContactUs" element={<ContactUs />} />
                   <Route path="/SingleUpload" element={<SingleUpload />} />
+                  <Route path="/TestSpace" element={<TestSpace />} />
                 </Routes>
               </Router>
             </div>

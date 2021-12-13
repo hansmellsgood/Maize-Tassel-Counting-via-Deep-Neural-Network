@@ -33,6 +33,11 @@ function SideBarNav() {
                         <NavLink className="nav-link" to="/ContactUs">
                             Contact Us
                         </NavLink>
+                    </MenuItem>
+                    <MenuItem>
+                        <NavLink className="nav-link" to="/TestSpace">
+                            Test Space
+                        </NavLink>
                     </MenuItem>                
                 </Menu>
             </SidebarContent>
