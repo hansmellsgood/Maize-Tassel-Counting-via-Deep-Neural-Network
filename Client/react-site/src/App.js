@@ -4,6 +4,7 @@ import * as serviceWorker from "./serviceWorker";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import {
   AboutUs,
+  UserManual,
   ContactUs,
   SideBarNav,
   SingleUpload
@@ -17,11 +18,13 @@ function App() {
                 <SideBarNav />
                 <Routes>
                   <Route path="/" element={<AboutUs />} />
+                  <Route path="/UserManual" element={<UserManual />} />
                   <Route path="/ContactUs" element={<ContactUs />} />
                   <Route path="/SingleUpload" element={<SingleUpload />} />
                 </Routes>
               </Router>
-            </div>   
+            </div>
+            
         </div>
     )
 }

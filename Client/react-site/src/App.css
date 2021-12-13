@@ -29,9 +29,11 @@ code {
 
 .container-fluid {
   width: 100%;
+  max-width: 100%;
   min-height: 100%;
   display: block;
-  position:relative;
+  position: relative;
+  padding: var(--bs-gutter-x,.75rem);
 }
 
 .pro-sidebar {
@@ -49,10 +51,14 @@ code {
 }
 
 .top {
-  height: 50vh;
-  
+  height: 50%;
 }
 
 .bottom {
-  height: 50vh;
+  height: 50%;
+}
+
+.manual, .about, .contact, .upload {
+  width: 100vw;
+  height: 100vh;
 }

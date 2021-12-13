@@ -20,6 +20,11 @@ function SideBarNav() {
                         </NavLink>
                     </MenuItem>
                     <MenuItem>
+                        <NavLink className="nav-link" to="/UserManual">
+                            User Manual
+                        </NavLink>
+                    </MenuItem>
+                    <MenuItem>
                         <NavLink className="nav-link" to="/SingleUpload">
                             Single Upload
                         </NavLink>

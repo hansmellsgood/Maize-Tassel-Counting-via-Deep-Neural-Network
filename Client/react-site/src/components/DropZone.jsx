@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import axios from 'axios';
+import Scroll from 'react-scroll';
 
 import './DropZone.css';
 
@@ -166,43 +167,51 @@ const DropZone = () => {
 
     return (
         <>
-            <div className="contain-box">
-                {unsupportedFiles.length === 0 && validFiles.length ? <button className="file-upload-btn" onClick={() => uploadFiles()}>Upload Files</button> : ''} 
-                {unsupportedFiles.length ? <p>Please remove all unsupported files.</p> : ''}
-                <div className="drop-contain-box"
-                    onDragOver={dragOver}
-                    onDragEnter={dragEnter}
-                    onDragLeave={dragLeave}
-                    onDrop={fileDrop}
-                    onClick={fileInputClicked}
-                >
-                    <div className="drop-message">
-                        <div className="upload-icon"></div>
-                        Drag & Drop files here or click to select file(s)
+            <div className="contain-box row">
+                <div className='col'>
+                    <div className="drop-contain-box"
+                        onDragOver={dragOver}
+                        onDragEnter={dragEnter}
+                        onDragLeave={dragLeave}
+                        onDrop={fileDrop}
+                        onClick={fileInputClicked}
+                    >
+                        <div className="drop-message">
+                            Drag & Drop files here or click to select file(s)
+                        </div>
+                        <input
+                            ref={fileInputRef}
+                            className="file-input"
+                            type="file"
+                            multiple
+                            onChange={filesSelected}
+                        />
                     </div>
-                    <input
-                        ref={fileInputRef}
-                        className="file-input"
-                        type="file"
-                        multiple
-                        onChange={filesSelected}
-                    />
+                    <div className='buttonmessage'>
+                        {unsupportedFiles.length === 0 && validFiles.length ? <button className="file-upload-btn center" onClick={() => uploadFiles()}>Upload</button> : ''} 
+                        {unsupportedFiles.length ? <p>Please remove all unsupported files.</p> : ''}
+                    </div>
                 </div>
-                <div className="file-display-contain-box">
-                    {
-                        validFiles.map((data, i) => 
-                            <div className="file-status-bar" key={i}>
-                                <div onClick={!data.invalid ? () => openImageModal(data) : () => removeFile(data.name)}>
-                                    <div className="file-type-logo"></div>
-                                    <div className="file-type">{fileType(data.name)}</div>
-                                    <span className={`file-name ${data.invalid ? 'file-error' : ''}`}>{data.name}</span>
-                                    <span className="file-size">({fileSize(data.size)})</span> {data.invalid && <span className='file-error-message'>({errorMessage})</span>}
+                <div className='col'>
+                    <Scroll.Element className="scroll-element" id="containerElement">
+                    <div className="file-display-contain-box">
+                        {
+                            validFiles.map((data, i) => 
+                                <div className="file-status-bar" key={i}>
+                                    <div onClick={!data.invalid ? () => openImageModal(data) : () => removeFile(data.name)}>
+                                        <div className="file-type-logo"></div>
+                                        <div className="file-type">{fileType(data.name)}</div>
+                                        <span className={`file-name ${data.invalid ? 'file-error' : ''}`}>{data.name}</span>
+                                        <span className="file-size">({fileSize(data.size)})</span> {data.invalid && <span className='file-error-message'>({errorMessage})</span>}
+                                    </div>
+                                    <div className="file-remove" onClick={() => removeFile(data.name)}>X</div>
                                 </div>
-                                <div className="file-remove" onClick={() => removeFile(data.name)}>X</div>
-                            </div>
-                        )
-                    }
+                            )
+                        }
+                    </div>
+                    </Scroll.Element>
                 </div>
+                
             </div>
             <div className="modal" ref={modalRef}>
                 <div className="overlay"></div>

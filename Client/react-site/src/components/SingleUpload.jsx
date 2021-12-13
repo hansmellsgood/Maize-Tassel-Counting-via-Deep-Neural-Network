@@ -5,12 +5,14 @@ import '../App.css';
 
 function SingleUpload() {
     return (
-        <div className="container-fluid">
-            <div className="row align-items-center content top p-3">
-                <DropZone />
-            </div>
-            <div className="bottom">
-
+        <div className='upload'>
+            <div className="container-fluid">
+                <div className="vertical-align-top content top p-3">
+                    <h2 className="font-weight-light">Single Upload</h2>
+                        <DropZone />
+                    </div>
+                <div className="bottom">
+                </div>
             </div>
         </div>
     )

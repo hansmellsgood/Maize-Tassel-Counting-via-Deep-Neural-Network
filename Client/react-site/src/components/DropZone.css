@@ -1,6 +1,19 @@
+.scroll-element {
+    position: relative; 
+    height: 200px; 
+    overflow: auto;
+}
+
+
 .file-input {
     display: none;
 } 
+
+.buttonmessage {
+    display: flex;
+    align-content: center;
+    justify-content: center;
+}
 
 .file-upload-btn {
     color: white;
@@ -9,13 +22,15 @@
     background-color: #4aa1f3;
     font-weight: bold;
     padding: 8px 15px;
-    margin-bottom: 5px;
+    margin: 5px;
+    display:block;
 }
 
 .contain-box {
     display:flex;
-    align-items: center;
     justify-content: center;
+    width: 100%;
+    height: 100%;
 }
 
 .contain-box p {
@@ -28,18 +43,11 @@
     align-items: center;
     justify-content: center;
     margin: 0;
-    width: 600px;
+    padding: 0;
+    width: 100%;
+    min-width: 200px;
     height: 120px;
     border: 4px dashed #4aa1f3;
-}
-
-.upload-icon {
-    width: 50px;
-    height: 50px;
-    background-size: 100%;
-    text-align: center;
-    margin: 0 auto;
-    padding-top: 30px;
 }
 
 .drop-message {
@@ -74,8 +82,7 @@
 }
   
 .file-display-contain-box {
-    position: relative;
-    width: 600px;
+    position:block;
 }
   
 .file-status-bar{
@@ -111,6 +118,7 @@
     vertical-align:top;
     margin-left: 50px;
     color: #4aa1f3;
+    font-size: 14px;
 }
 
 .file-error {
@@ -122,6 +130,7 @@
 
 .file-error-message {
     color: red;
+    font-size: 12px;
 }
   
 .file-type-logo {
