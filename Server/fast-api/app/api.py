@@ -18,7 +18,7 @@ app.add_middleware(
     allow_headers=["*"]
 )
 
-test1 = [
+tests = [
     {
         "id": "1",
         "item": "Read a book."
@@ -29,11 +29,18 @@ test1 = [
     }
 ]
 
-@app.get("/test1", tags=["test1"])
-async def get_test1() -> dict:
-    return { "data": test1 }
+@app.get("/test", tags=["tests"])
+async def get_tests() -> dict:
+    return { "data": tests }
 
 
 @app.get("/", tags=["root"])
 async def read_root() -> dict:
     return {"message": "Testing"}
+
+@app.post("/test", tags=["tests"])
+async def add_test(test: dict) -> dict:
+    tests.append(test)
+    return {
+        "data": { "Todo added." }
+    }
