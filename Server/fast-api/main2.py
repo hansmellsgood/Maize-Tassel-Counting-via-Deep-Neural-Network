@@ -59,7 +59,7 @@ async def predict(
 
     return {
         'image_size': image.size,
-        "transform_size": img1.size
+        "transform_size": img1.size()
     }
 
 

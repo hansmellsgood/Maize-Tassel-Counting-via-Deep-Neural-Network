@@ -138,7 +138,7 @@ const DropZone = () => {
             formData.append('key', '');
 
             /*https://api.imgbb.com/1/upload8 */
-            res = axios.post('http://localhost:8000/predict', formData, {
+            axios.post('http://localhost:8000/predict', formData, {
                 onUploadProgress: (progressEvent) => {
                     const uploadPercentage = Math.floor((progressEvent.loaded / progressEvent.total) * 100);
                     progressRef.current.innerHTML = `${uploadPercentage}%`;
