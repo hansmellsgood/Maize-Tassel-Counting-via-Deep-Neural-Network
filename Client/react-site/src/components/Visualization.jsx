@@ -1,14 +1,7 @@
 import React from 'react';
 import '../App.css';
 import Button from 'react-bootstrap/Button';
-
-const result = () =>{
-    var eCount = 'Count: 99';
-    var eManualCount = 'Manual Count: 100';
-    var eAccuracy = 'MHE: xxx MSE: xxx R2: xxx RMSE: xxx';
-
-    
-}
+import DisplayTest from './DisplayTest';
 
 function Visualization() {
     
@@ -22,14 +15,15 @@ function Visualization() {
                 />
             </div>
             <div className='col'>
-                <Button variant="secondary" size="sm" className="visualization-btn">Count Maize Tassels</Button>
-                <Button variant="secondary" size="sm" className="visualization-btn">Density Map</Button>
-                <Button variant="secondary" size="sm" className="visualization-btn">Dot Annotations</Button>
-                <Button variant="secondary" size="sm" className="visualization-btn">Download Image</Button>
-
-                <div className='single-results'>
+                <div className='btn group p-0'>
+                    <Button variant="secondary" size="sm" className="visualization-btn">Count Maize Tassels</Button>
+                    <Button variant="secondary" size="sm" className="visualization-btn">Density Map</Button>
+                    <Button variant="secondary" size="sm" className="visualization-btn">Dot Annotations</Button>
+                    <Button variant="secondary" size="sm" className="visualization-btn">Download Image</Button>
+                </div>
+                <div className='single-results pt-3'>
                     <h5>Results</h5>
-                    this.result.eCount
+                    <DisplayTest />
                 </div>
             </div>
             
@@ -37,4 +31,4 @@ function Visualization() {
     )
 }
 
-export default Visualization
+export default Visualization;
