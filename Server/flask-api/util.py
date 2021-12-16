@@ -16,7 +16,7 @@ def classify_image(image_base64_data, file_path=None):
     result = []
     for img in imgs:
         scalled_raw_img = cv2.resize(img, (32, 32))
-        img_har = w2d(img, 'db1', 5)
+        img_har = cv2(img, 'db1', 5)
         scalled_img_har = cv2.resize(img_har, (32, 32))
         combined_img = np.vstack((scalled_raw_img.reshape(32 * 32 * 3, 1), scalled_img_har.reshape(32 * 32, 1)))
 
