@@ -4,9 +4,15 @@ import uvicorn
 import numpy as np
 from io import BytesIO
 from PIL import Image
-import tensorflow as tf
+
+# import tensorflow as tf
+import torch
+import torch.nn as nn
+import torch.optim as optim
+from torchvision import datasets, transforms
 
 app = FastAPI()
+
 
 origins = [
     "http://localhost",
@@ -20,33 +26,42 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-MODEL = tf.keras.models.load_model("../saved_models/1")
 
-CLASS_NAMES = ["Early Blight", "Late Blight", "Healthy"]
+# MODEL = tf.keras.models.load_model("../saved_models/1")
+
+# CLASS_NAMES = ["Early Blight", "Late Blight", "Healthy"]
 
 @app.get("/ping")
 async def ping():
     return "Hello, I am alive"
 
-def read_file_as_image(data) -> np.ndarray:
-    image = np.array(Image.open(BytesIO(data)))
+
+def read_file_as_image(data):
+    image = Image.open(BytesIO(data))
     return image
+
 
 @app.post("/predict")
 async def predict(
-    file: UploadFile = File(...)
+        file: UploadFile = File(...)
 ):
     image = read_file_as_image(await file.read())
-    img_batch = np.expand_dims(image, 0)
-    
-    predictions = MODEL.predict(img_batch)
+    transform = transforms.Compose([
+       transforms.Resize((32, 32)),
+       transforms.ToTensor()
+    ])
+    img1 = transform(image).unsqueeze(0)
 
-    predicted_class = CLASS_NAMES[np.argmax(predictions[0])]
-    confidence = np.max(predictions[0])
+    # img_batch = np.expand_dims(image, 0)
+    # predictions = MODEL.predict(img_batch)
+    # predicted_class = CLASS_NAMES[np.argmax(predictions[0])]
+    # confidence = np.max(predictions[0])
+
     return {
-        'class': predicted_class,
-        'confidence': float(confidence)
+        'image_size': image.size,
+        "transform_size": img1.size
     }
+
 
 if __name__ == "__main__":
     uvicorn.run(app, host='localhost', port=8000)
