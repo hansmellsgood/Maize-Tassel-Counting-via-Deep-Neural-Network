@@ -50,12 +50,14 @@ code {
   padding: 35px;
 }
 
-.top {
+.top, .bottom{
   height: 50%;
 }
 
-.bottom {
-  height: 50%;
+.left, .right {
+  min-width: 50%;
+  width: 50%;
+  max-width: 50%;
 }
 
 .manual, .about, .contact, .upload, .test{
@@ -72,4 +74,25 @@ code {
 
 .body-text {
   padding: 5px;
+}
+
+.img-fluid {
+  min-height:30%;
+  max-height:500px;
+  width: auto;
+}
+
+.img-right > img{ 
+  display: block !important;
+  margin-left: auto !important;
+}
+
+.visualization-btn {
+  color: white;
+  text-transform: uppercase;
+  outline: none;
+  font-weight: bold;
+  padding: 8px 15px;
+  margin: 0px 0px 5px 0px;
+  display:block;
 }

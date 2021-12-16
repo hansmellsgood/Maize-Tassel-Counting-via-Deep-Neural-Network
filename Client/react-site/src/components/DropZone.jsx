@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import axios from 'axios';
 import Scroll from 'react-scroll';
+import Button from 'react-bootstrap/Button';
 
 import './DropZone.css';
 
@@ -188,7 +189,7 @@ const DropZone = () => {
                         />
                     </div>
                     <div className='buttonmessage'>
-                        {unsupportedFiles.length === 0 && validFiles.length ? <button className="file-upload-btn center" onClick={() => uploadFiles()}>Upload</button> : ''} 
+                        {unsupportedFiles.length === 0 && validFiles.length ? <Button className="file-upload-btn center" variant="secondary" size="sm" onClick={() => uploadFiles()}>Upload</Button> : ''} 
                         {unsupportedFiles.length ? <p>Please remove all unsupported files.</p> : ''}
                     </div>
                 </div>

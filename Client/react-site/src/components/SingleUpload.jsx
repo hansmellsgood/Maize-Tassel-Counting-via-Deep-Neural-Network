@@ -1,5 +1,6 @@
 import React from 'react'
 import DropZone from './DropZone.jsx';
+import Visualization from './Visualization.jsx';
 import '../App.css';
 
 
@@ -15,6 +16,7 @@ function SingleUpload() {
                 <div className="vertical-align-top content bottom p-3">
                     <h2 className="font-weight-light">Visualization</h2>
                     <hr/>
+                        <Visualization />
                 </div>
             </div>
         </div>
