@@ -58,6 +58,5 @@ async def predict(
         "transform_size": img1.size()
     }
 
-
 if __name__ == "__main__":
     uvicorn.run(app, host='localhost', port=8000)
