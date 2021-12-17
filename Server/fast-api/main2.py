@@ -29,9 +29,28 @@ app.add_middleware(
 
 # CLASS_NAMES = ["Early Blight", "Late Blight", "Healthy"]
 
+tests = [
+    {
+        "id": "1",
+        "citem": "Read a book."
+    },
+    {
+        "id": "2",
+        "citem": "Cycle around town."
+    }
+]
+
 @app.get("/ping")
-async def ping():
-    return "Hello, I am alive"
+async def ping() -> dict:
+    return {'data': tests}
+
+@app.post("/ping")
+async def add_tests(test: dict) -> dict:
+    tests.append(test)
+    return {
+        "data": {"Tests added."}
+    }
+
 
 def read_file_as_image(data):
     image = Image.open(BytesIO(data))
