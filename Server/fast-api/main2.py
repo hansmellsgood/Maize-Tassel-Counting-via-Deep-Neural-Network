@@ -13,7 +13,6 @@ from torchvision import datasets, transforms
 
 app = FastAPI()
 
-
 origins = [
     "http://localhost",
     "http://localhost:3000",
@@ -26,7 +25,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
 # MODEL = tf.keras.models.load_model("../saved_models/1")
 
 # CLASS_NAMES = ["Early Blight", "Late Blight", "Healthy"]
@@ -35,11 +33,9 @@ app.add_middleware(
 async def ping():
     return "Hello, I am alive"
 
-
 def read_file_as_image(data):
     image = Image.open(BytesIO(data))
     return image
-
 
 @app.post("/predict")
 async def predict(
