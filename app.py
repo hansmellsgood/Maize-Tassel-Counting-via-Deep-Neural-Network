@@ -16,7 +16,6 @@ if __name__ == '__main__':
 
 mysql = MySQL(app)
 
-
 @app.route('/', methods=['GET', 'POST'])
 def visit():
     if request.method == 'GET':
