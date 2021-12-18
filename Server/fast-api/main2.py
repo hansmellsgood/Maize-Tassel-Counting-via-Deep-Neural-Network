@@ -51,7 +51,6 @@ async def add_tests(test: dict) -> dict:
         "data": {"Tests added."}
     }
 
-
 def read_file_as_image(data):
     image = Image.open(BytesIO(data))
     return image
