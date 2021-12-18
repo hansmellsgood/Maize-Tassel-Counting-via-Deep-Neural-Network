@@ -42,5 +42,5 @@ async def read_root() -> dict:
 async def add_test(test: dict) -> dict:
     tests.append(test)
     return {
-        "data": { "Todo added." }
+        "data": {"Todo added."}
     }
