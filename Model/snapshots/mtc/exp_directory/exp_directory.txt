@@ -1,0 +1,42 @@
+image_scale :	 0.00392156862745098
+image_mean :	 [0.3405, 0.4747, 0.2418]
+image_std :	 [1, 1, 1]
+scales :	 [0.7, 1, 1.3]
+shorter_side :	 224
+data_dir :	 maize_counting_dataset
+dataset :	 mtc
+exp :	 exp_directory
+data_list :	 maize_counting_dataset/train.txt
+data_val_list :	 maize_counting_dataset/test.txt
+restore_from :	 model_best.pth.tar
+snapshot_dir :	 ./snapshots
+result_dir :	 ./results
+save_output :	 store_true
+input_size :	 64
+output_stride :	 8
+resize_ratio :	 0.125
+model :	 tasselnetv2
+optimizer :	 sgd
+batch_size :	 9
+milestones :	 [200, 400]
+crop_size :	 (256, 256)
+evaluate_only :	 store_true
+learning_rate :	 0.01
+momentum :	 0.95
+weight_decay :	 0.0005
+mult :	 1
+num_epochs :	 3
+num_workers :	 0
+print_every :	 1
+random_seed :	 6
+val_every :	 1
+epoch: 1, mae: inf, mse: inf, rmae: inf%, rmse: inf%, r2: nan
+epoch: 1, mae: 28.89, mse: 35.18, rmae: 127.11%, rmse: 338.03%, r2: 0.0002
+epoch: 2, mae: 13.26, mse: 17.30, rmae: 106.31%, rmse: 397.51%, r2: 0.6215
+epoch: 3, mae: 17.30, mse: 24.53, rmae: 71.04%, rmse: 176.03%, r2: 0.4459
+best mae: 13.26, best mse: 17.30, best_rmae: 106.31, best_rmse: 397.51, best_r2: 0.6215
+overall best mae: 13.26, overall best mse: 17.30, overall best_rmae: 71.04, overall best_rmse: 176.03, overall best_r2: nan
+epoch: 3, mae: 13.20, mse: 18.64, rmae: 50.54%, rmse: 112.44%, r2: 0.6762
+best mae: 13.20, best mse: 18.64, best_rmae: 50.54, best_rmse: 112.44, best_r2: 0.6762
+overall best mae: 13.20, overall best mse: 17.30, overall best_rmae: 50.54, overall best_rmse: 112.44, overall best_r2: nan
+epoch: 2, mae: 13.20, mse: 18.64, rmae: 50.54%, rmse: 112.44%, r2: 0.6762
