@@ -30,13 +30,7 @@ function DisplayTest() {
     return (
 
         <div className='resultsDisplay'>
-            <p>Count: {display.count.toString()}<br />
-            Manual Count: {display.Mcount.toString()}<br />
-            MHE: {display.mhe.toString()}<br />
-            MSE: {display.mse.toString()}<br />
-            R2: {display.r2.toString()}<br />
-            RMSE: {display.rmse.toString()}<br />
-            </p>
+            <p>Count: {display.count.toString()}</p> 
             <button type="button"onClick={updateCount}>Update Count</button>
             <button type="button"onClick={updateMCount}>Update MCount</button>
 
