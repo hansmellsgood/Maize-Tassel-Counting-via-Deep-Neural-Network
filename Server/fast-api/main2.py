@@ -40,9 +40,11 @@ tests = [
     }
 ]
 
+
 @app.get("/ping")
 async def ping() -> dict:
     return {'data': tests}
+
 
 @app.post("/ping")
 async def add_tests(test: dict) -> dict:
@@ -51,9 +53,11 @@ async def add_tests(test: dict) -> dict:
         "data": {"Tests added."}
     }
 
+
 def read_file_as_image(data):
     image = Image.open(BytesIO(data))
     return image
+
 
 @app.post("/predict")
 async def predict(
@@ -61,8 +65,8 @@ async def predict(
 ):
     image = read_file_as_image(await file.read())
     transform = transforms.Compose([
-       transforms.Resize((32, 32)),
-       transforms.ToTensor()
+        transforms.Resize((32, 32)),
+        transforms.ToTensor()
     ])
     img1 = transform(image).unsqueeze(0)
 
@@ -75,6 +79,7 @@ async def predict(
         'image_size': image.size,
         "transform_size": img1.size()
     }
+
 
 if __name__ == "__main__":
     uvicorn.run(app, host='localhost', port=8000)
