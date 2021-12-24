@@ -1,4 +1,4 @@
-from fastapi import FastAPI, File, UploadFile
+from fastapi import FastAPI, File, UploadFile, Form
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 import numpy as np
@@ -40,23 +40,54 @@ tests = [
     }
 ]
 
+single = [
+    {
+        "id": "1",
+        "file": "1",
+        "file_name": "test.jpeg",
+        "count": "3",
+        # "density_img":"test.jpeg"
+    }]
+
+multiple = [
+    {
+        "id": "1",
+        "file": "1",
+        "file_name": "test.jpeg",
+        "count": "3",
+        # "density_img":"test.jpeg"
+    },
+    {
+        "id": "2",
+        "file": "1",
+        "file_name": "test.jpeg",
+        "count": "3",
+        # "density_img": "test.jpeg"
+    }
+]
+
 
 @app.get("/ping")
 async def ping() -> dict:
-    return {'data': tests}
+    return {'data1': tests}
 
 
 @app.post("/ping")
 async def add_tests(test: dict) -> dict:
     tests.append(test)
     return {
-        "data": {"Tests added."}
+        "data1": {"Tests added."}
     }
 
 
 def read_file_as_image(data):
     image = Image.open(BytesIO(data))
     return image
+
+
+@app.get("/predict")
+async def get_image() -> dict:
+    return {'data': tests}
 
 
 @app.post("/predict")

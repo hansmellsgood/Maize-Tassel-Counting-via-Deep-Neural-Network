@@ -1,26 +1,26 @@
 import React, { useEffect, useState } from "react";
+import axios from 'axios';
 import '../App.css';
 import DropZone from './DropZone.jsx';
-
+import Visualization from './Visualization.jsx';
 
 const TodosContext = React.createContext({
     todos: [], fetchTodos: () => { }
 })
 
-export default function Todos() {  
+export default function Todos() {
     const [todos, setTodos] = useState([])
     const fetchTodos = async () => {
         const response = await fetch("http://localhost:8000/ping")
         const todos = await response.json()
-        setTodos(todos.data)
+        setTodos(todos.data1)
     }
     useEffect(() => {
         fetchTodos()
     }, [])
-    
+
     return (
-        <TodosContext.Provider value={{ todos, fetchTodos }}>
-            
+        <TodosContext.Provider value={{ todos, fetchTodos }}>       
             <div className="test">
                 <div className="container-fluid col">
                     <div className="align-items-center content p-3">
@@ -30,8 +30,9 @@ export default function Todos() {
                     </div>
                     <AddTodo />
                     {todos.map((todo) => (
-                        <b> {todo.id} {todo.citem}<br/></b>
-                    ))}                   
+                        <b> {todo.id} {todo.citem}<br /></b>
+                    ))}
+                    <Visualization />
                 </div>
             </div>
         </TodosContext.Provider>
