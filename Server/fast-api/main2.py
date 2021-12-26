@@ -1,4 +1,4 @@
-from fastapi import FastAPI, File, UploadFile
+from fastapi import FastAPI, File, UploadFile, Form
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 import numpy as np
@@ -40,20 +40,55 @@ tests = [
     }
 ]
 
+single = [
+    {
+        "id": "1",
+        "file": "1",
+        "file_name": "test.jpeg",
+        "count": "3",
+        # "density_img":"test.jpeg"
+    }]
+
+multiple = [
+    {
+        "id": "1",
+        "file": "1",
+        "file_name": "test.jpeg",
+        "count": "3",
+        # "density_img":"test.jpeg"
+    },
+    {
+        "id": "2",
+        "file": "1",
+        "file_name": "test.jpeg",
+        "count": "3",
+        # "density_img": "test.jpeg"
+    }
+]
+
+
 @app.get("/ping")
 async def ping() -> dict:
-    return {'data': tests}
+    return {'data1': tests}
+
 
 @app.post("/ping")
 async def add_tests(test: dict) -> dict:
     tests.append(test)
     return {
-        "data": {"Tests added."}
+        "data1": {"Tests added."}
     }
+
 
 def read_file_as_image(data):
     image = Image.open(BytesIO(data))
     return image
+
+
+@app.get("/predict")
+async def get_image() -> dict:
+    return {'data': tests}
+
 
 @app.post("/predict")
 async def predict(
@@ -61,8 +96,8 @@ async def predict(
 ):
     image = read_file_as_image(await file.read())
     transform = transforms.Compose([
-       transforms.Resize((32, 32)),
-       transforms.ToTensor()
+        transforms.Resize((32, 32)),
+        transforms.ToTensor()
     ])
     img1 = transform(image).unsqueeze(0)
 
@@ -75,6 +110,7 @@ async def predict(
         'image_size': image.size,
         "transform_size": img1.size()
     }
+
 
 if __name__ == "__main__":
     uvicorn.run(app, host='localhost', port=8000)

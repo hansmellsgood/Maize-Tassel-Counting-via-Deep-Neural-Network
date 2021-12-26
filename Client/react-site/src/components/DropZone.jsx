@@ -134,11 +134,14 @@ const DropZone = () => {
         uploadRef.current.innerHTML = 'File(s) Uploading...';
         for (let i = 0; i < validFiles.length; i++) {
             const formData = new FormData();
-            formData.append('image', validFiles[i]);
-            formData.append('key', '');
+            formData.append('file', validFiles[0]);
+            /*formData.append('key', '');*/
 
             /*https://api.imgbb.com/1/upload8 */
             axios.post('http://localhost:8000/predict', formData, {
+                headers: {
+                    'Content-Type': "multipart/form-data"
+                },
                 onUploadProgress: (progressEvent) => {
                     const uploadPercentage = Math.floor((progressEvent.loaded / progressEvent.total) * 100);
                     progressRef.current.innerHTML = `${uploadPercentage}%`;
@@ -165,7 +168,6 @@ const DropZone = () => {
         uploadModalRef.current.style.display = 'none';
     }
 
-
     return (
         <>
             <div className="contain-box row">
@@ -185,6 +187,7 @@ const DropZone = () => {
                             className="file-input"
                             type="file"
                             multiple
+                            /*single*/
                             onChange={filesSelected}
                         />
                     </div>

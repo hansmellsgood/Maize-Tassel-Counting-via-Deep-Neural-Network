@@ -38,7 +38,6 @@ code {
 
 .pro-sidebar {
   height: 100% !important;
-  width: 250px !important;
   min-width: 250px !important;
   max-width: 250px !important;
   display: block;
@@ -77,9 +76,8 @@ code {
 }
 
 .img-fluid {
-  min-height:30%;
-  max-height:500px;
-  width: auto;
+  min-height:50%;
+  width: inherit;
 }
 
 .img-right > img{ 
@@ -100,4 +98,8 @@ code {
 .resultsDisplay p{
   color:black;
   text-align:left;
+}
+
+.img-right {
+  flex: 0.5 0;
 }
