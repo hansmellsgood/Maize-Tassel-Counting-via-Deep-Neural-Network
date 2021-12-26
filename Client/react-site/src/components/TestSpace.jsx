@@ -11,7 +11,7 @@ const TodosContext = React.createContext({
 export default function Todos() {
     const [todos, setTodos] = useState([])
     const fetchTodos = async () => {
-        const response = await fetch("http://localhost:8000/ping")
+        const response = await fetch("http://localhost:8000/ping", {method:'GET'})
         const todos = await response.json()
         setTodos(todos.data1)
     }

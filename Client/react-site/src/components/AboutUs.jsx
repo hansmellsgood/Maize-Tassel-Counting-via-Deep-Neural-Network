@@ -1,9 +1,11 @@
 import React from "react";
 import '../App.css';
+import Scroll from 'react-scroll';
 
 function AboutUs() {
   return (
     <div className="about">
+      <Scroll.Element className="full-scroll-element" id="containerElement">
       <div className="container-fluid col">
         <div className="align-items-center content p-3">
           <h2 className="font-weight-light">About Us</h2>
@@ -19,6 +21,7 @@ function AboutUs() {
             </p>
         </div>
       </div>    
+      </Scroll.Element>
     </div>
   );
 }

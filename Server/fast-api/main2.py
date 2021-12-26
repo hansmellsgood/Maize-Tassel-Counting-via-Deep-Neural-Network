@@ -4,6 +4,7 @@ import uvicorn
 import numpy as np
 from io import BytesIO
 from PIL import Image
+import base64
 
 # import tensorflow as tf
 import torch
@@ -94,21 +95,29 @@ async def get_image() -> dict:
 async def predict(
         file: UploadFile = File(...)
 ):
-    image = read_file_as_image(await file.read())
-    transform = transforms.Compose([
-        transforms.Resize((32, 32)),
-        transforms.ToTensor()
-    ])
-    img1 = transform(image).unsqueeze(0)
+    data = base64.b64encode(await file.read())
+    #image = read_file_as_image(await file.read())
+    #transform = transforms.Compose([
+    #    transforms.Resize((32, 32)),
+    #    transforms.ToTensor()
+    #])
+    #img1 = transform(image).unsqueeze(0)
 
     # img_batch = np.expand_dims(image, 0)
     # predictions = MODEL.predict(img_batch)
     # predicted_class = CLASS_NAMES[np.argmax(predictions[0])]
     # confidence = np.max(predictions[0])
 
+    
+
+
     return {
-        'image_size': image.size,
-        "transform_size": img1.size()
+        #'image_size': image.size,
+        #"transform_size": img1.size(),
+        'file_name' : file.filename,
+        'encode' : data,
+        'encode1' : '',
+        'encode2' : ''
     }
 
 

@@ -1,9 +1,11 @@
 import React from "react";
 import '../App.css';
+import Scroll from 'react-scroll';
 
 function ContactUs() {
   return (
     <div className="contact">
+      <Scroll.Element className="full-scroll-element" id="containerElement">
       <div className="container-fluid col">
         <div className="align-items-center content p-3">
           <h2 className="font-weight-light">Contact Us</h2>
@@ -25,7 +27,8 @@ function ContactUs() {
               <h6>Phua Zhon</h6><p>phuazhon@email.com</p>
           </div>
         </div>
-      </div>    
+      </div>
+      </Scroll.Element>    
     </div>
   );
 }

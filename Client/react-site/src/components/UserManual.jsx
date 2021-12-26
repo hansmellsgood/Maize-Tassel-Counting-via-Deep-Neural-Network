@@ -1,10 +1,12 @@
 import React from "react";
 import '../App.css';
 import Accordion from "react-bootstrap/Accordion";
+import Scroll from 'react-scroll';
 
 function UserManual() {
   return (
     <div className="manual w-100 h-100">
+        <Scroll.Element className="full-scroll-element" id="containerElement">
         <div className="container-fluid">
             <div className="align-items-center content p-3">
                 <h2 className="font-weight-light">User Manual</h2>
@@ -85,6 +87,7 @@ function UserManual() {
                 </div>
             </div>
         </div> 
+        </Scroll.Element>
     </div>
     
   );
