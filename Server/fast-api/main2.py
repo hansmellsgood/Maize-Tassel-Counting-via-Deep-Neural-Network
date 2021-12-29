@@ -108,9 +108,6 @@ async def predict(
     # predicted_class = CLASS_NAMES[np.argmax(predictions[0])]
     # confidence = np.max(predictions[0])
 
-    
-
-
     return {
         #'image_size': image.size,
         #"transform_size": img1.size(),
