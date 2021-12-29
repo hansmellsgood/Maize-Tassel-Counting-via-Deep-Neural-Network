@@ -220,7 +220,7 @@ const DropZone = () => {
                 const rrr = rr.data;
                 const rx = 'data:image/jpeg;base64,' + rrr.encode;
                 setRC(previousState => {
-                    return { ...previousState, 'file_name' : rrr.file_name.toString(), 'count' : 12, 'encoded' : rx}});
+                    return { ...previousState, 'file_name' : rrr.file_name, 'count' : rrr.count, 'encoded' : rx}});
                 
                 /*
                 setIMG(previousState => {
