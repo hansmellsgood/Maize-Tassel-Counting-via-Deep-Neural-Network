@@ -2,31 +2,70 @@ import React, { useRef, useState, useEffect } from 'react';
 import axios from 'axios';
 import Scroll from 'react-scroll';
 import Button from 'react-bootstrap/Button';
+import imageee from './Screenshot2021-09-16134650.jpg';
+import imagee from './Screenshot2021-09-16134602.jpg'
 
 import './DropZone.css';
 
 const returnContext = React.createContext({
-    returnC: {}, fetchRC: () => {}
+    returnC: {}, fetchRC: () => {}, r: []
 
 })
 
 function Visualization() {
-    const {returnC, setRC} = React.useContext(returnContext)
-    /* unused */
-    const [display, setDisplay] = useState({
-        file_name: 'Display Name',
-        count: 0
-    });
+    const {returnC, r} = React.useContext(returnContext)
+    
+    const [display, setDisplay] = useState([])
+    /*
+    const [display, setDisplay] = useState([
+        {
+            id: 1,
+            file_name: 'Display 1',
+            image: imageee,
+            count: 0
+        },
+        {
+            id: 2, 
+            file_name: 'Display 2', 
+            image: imagee, 
+            count: 22
+        },
+        {
+            id: 3, 
+            file_name: 'Display 3', 
+            image: imageee, 
+            count: 400
+        },
+        {
+            id: 4,
+            file_name: 'Display 4',
+            image: imagee,
+            count: 0
+        },
+        {
+            id: 5, 
+            file_name: 'Display 5', 
+            image: imageee, 
+            count: 22
+        },
+        {
+            id: 6, 
+            file_name: 'Display 6', 
+            image: imageee, 
+            count: 400
+        }
+    ]);
+    */
 
     const updateInfo = () => {
-        setRC(previousState=> {
+        setDisplay(previousState=> {
             return{ ...previousState, 'file_name': returnC.file_name}
         })
     }
 
     const countBtn = () => {
-        setRC(previousState=> {
-            return{ ...previousState, 'count': returnC.count * 2}
+        setDisplay(previousState=> {
+            return{ ...previousState, 'count': returnC.count}
         
     })};
     const downloadBtn = () => {
@@ -40,32 +79,28 @@ function Visualization() {
     })
 
     return (
+        <>
         <div className='visualization contain-box row'>
-            <div className='col img-right'>
-                <img 
-                    className="img-tt mb-lg-10"
-                    src= {returnC.encoded}
-                    alt="http://placehold.it/1024x768"
-                />
-            </div>
-            <div className='col'>
-                <div className='btn group p-0'>
-                    <Button variant="secondary" size="sm" className="visualization-btn" onClick={countBtn}>Count Maize Tassels</Button>
-                    <Button variant="secondary" size="sm" className="visualization-btn" onClick={densityMap}>Density Map</Button>
-                    <Button variant="secondary" size="sm" className="visualization-btn" onClick={downloadBtn}>Download Image</Button>
-                </div>
-                <div className='single-results pt-3'>
-                    <h5>Results</h5>
-                    <div className='resultsDisplay'>
-                        <p>File Name: {returnC.file_name} <br/>Count: {returnC.count}</p>    
+            {r.map((r) => (
+                    <div className='col-4'>
+                        <div className='center'>
+                            <img className='img-m mb-lg-10 ' src={r.image}/>
+                        
+                            <div className='single-results p-2'>
+                                <div className='resultsDisplay'>
+                                    <p className='text-center'>{r.file_name} <br />Count: {r.count}</p>
+                                </div>
+                            </div>
+                        </div> 
                     </div>
-                </div>
-            </div>
-        </div>
+            
+            ))}
+        </div></>
     )
+    
 }
 
-const DropZone = () => {
+const DropZoneM = () => {
     const fileInputRef = useRef();
     const modalImageRef = useRef();
     const modalRef = useRef();
@@ -139,7 +174,7 @@ const DropZone = () => {
     }
 
     const validateFile = (file) => {
-        const validTypes = ['image/jpeg'];
+        const validTypes = ['image/jpeg', 'image/jpg', 'image/png'];
         if (validTypes.indexOf(file.type) === -1) {
             return false;
         }
@@ -187,6 +222,7 @@ const DropZone = () => {
         modalRef.current.style.display = "none";
         modalImageRef.current.style.backgroundImage = 'none';
     }
+    const [r, setR] = useState([])
 
     const uploadFiles = async () => {
         uploadModalRef.current.style.display = 'block';
@@ -196,7 +232,7 @@ const DropZone = () => {
             formData.append('file', validFiles[0]);
             /*formData.append('key', '');*/
             /*https://api.imgbb.com/1/upload8 */
-            await axios.post('http://localhost:8000/predict', formData, {
+            await axios.post('http://localhost:8000/testArray', formData, {
                 /*
                 headers: {
                     'Content-Type': "multipart/form-data"
@@ -218,13 +254,13 @@ const DropZone = () => {
             })
             .then ((rr) => {
                 const rrr = rr.data;
-                const rx = 'data:image/jpeg;base64,' + rrr.encode;
+                console.log(rrr);
+                setR(rrr.data);
+                console.log(r);
+                /*const rx = 'data:image/jpeg;base64,' + rrr.encode;
                 setRC(previousState => {
-                    return { ...previousState, 'file_name' : rrr.file_name, 'count' : rrr.count, 'encoded' : rx}});
-                
-                /*
-                setIMG(previousState => {
-                    return { ...previousState, 'encode': rx}}); */
+                    return { ...previousState, 'file_name' : rrr.file_name.toString(), 'count' : 12, 'encoded' : rx}});
+                */
             })
             .catch(() => {
                 uploadRef.current.innerHTML = `<span class="error">Error Uploading File(s)</span>`;
@@ -239,30 +275,21 @@ const DropZone = () => {
         uploadModalRef.current.style.display = 'none';
     }
 
-
     const [returnC, setRC] = useState({
         'file_name' : 'empty',
         'count' : 0,
-        'encoded' : ''
+        'encoded' : 'data:image/jpeg;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAApgAAAKYB3X3/OAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAANCSURBVEiJtZZPbBtFFMZ/M7ubXdtdb1xSFyeilBapySVU8h8OoFaooFSqiihIVIpQBKci6KEg9Q6H9kovIHoCIVQJJCKE1ENFjnAgcaSGC6rEnxBwA04Tx43t2FnvDAfjkNibxgHxnWb2e/u992bee7tCa00YFsffekFY+nUzFtjW0LrvjRXrCDIAaPLlW0nHL0SsZtVoaF98mLrx3pdhOqLtYPHChahZcYYO7KvPFxvRl5XPp1sN3adWiD1ZAqD6XYK1b/dvE5IWryTt2udLFedwc1+9kLp+vbbpoDh+6TklxBeAi9TL0taeWpdmZzQDry0AcO+jQ12RyohqqoYoo8RDwJrU+qXkjWtfi8Xxt58BdQuwQs9qC/afLwCw8tnQbqYAPsgxE1S6F3EAIXux2oQFKm0ihMsOF71dHYx+f3NND68ghCu1YIoePPQN1pGRABkJ6Bus96CutRZMydTl+TvuiRW1m3n0eDl0vRPcEysqdXn+jsQPsrHMquGeXEaY4Yk4wxWcY5V/9scqOMOVUFthatyTy8QyqwZ+kDURKoMWxNKr2EeqVKcTNOajqKoBgOE28U4tdQl5p5bwCw7BWquaZSzAPlwjlithJtp3pTImSqQRrb2Z8PHGigD4RZuNX6JYj6wj7O4TFLbCO/Mn/m8R+h6rYSUb3ekokRY6f/YukArN979jcW+V/S8g0eT/N3VN3kTqWbQ428m9/8k0P/1aIhF36PccEl6EhOcAUCrXKZXXWS3XKd2vc/TRBG9O5ELC17MmWubD2nKhUKZa26Ba2+D3P+4/MNCFwg59oWVeYhkzgN/JDR8deKBoD7Y+ljEjGZ0sosXVTvbc6RHirr2reNy1OXd6pJsQ+gqjk8VWFYmHrwBzW/n+uMPFiRwHB2I7ih8ciHFxIkd/3Omk5tCDV1t+2nNu5sxxpDFNx+huNhVT3/zMDz8usXC3ddaHBj1GHj/As08fwTS7Kt1HBTmyN29vdwAw+/wbwLVOJ3uAD1wi/dUH7Qei66PfyuRj4Ik9is+hglfbkbfR3cnZm7chlUWLdwmprtCohX4HUtlOcQjLYCu+fzGJH2QRKvP3UNz8bWk1qMxjGTOMThZ3kvgLI5AzFfo379UAAAAASUVORK5CYII='
     })
 
     useEffect(() => {
     })
-
-    /*
-    const [returnIMG, setIMG] = useState({
-        'encode' : 'data:image/jpeg;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAApgAAAKYB3X3/OAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAANCSURBVEiJtZZPbBtFFMZ/M7ubXdtdb1xSFyeilBapySVU8h8OoFaooFSqiihIVIpQBKci6KEg9Q6H9kovIHoCIVQJJCKE1ENFjnAgcaSGC6rEnxBwA04Tx43t2FnvDAfjkNibxgHxnWb2e/u992bee7tCa00YFsffekFY+nUzFtjW0LrvjRXrCDIAaPLlW0nHL0SsZtVoaF98mLrx3pdhOqLtYPHChahZcYYO7KvPFxvRl5XPp1sN3adWiD1ZAqD6XYK1b/dvE5IWryTt2udLFedwc1+9kLp+vbbpoDh+6TklxBeAi9TL0taeWpdmZzQDry0AcO+jQ12RyohqqoYoo8RDwJrU+qXkjWtfi8Xxt58BdQuwQs9qC/afLwCw8tnQbqYAPsgxE1S6F3EAIXux2oQFKm0ihMsOF71dHYx+f3NND68ghCu1YIoePPQN1pGRABkJ6Bus96CutRZMydTl+TvuiRW1m3n0eDl0vRPcEysqdXn+jsQPsrHMquGeXEaY4Yk4wxWcY5V/9scqOMOVUFthatyTy8QyqwZ+kDURKoMWxNKr2EeqVKcTNOajqKoBgOE28U4tdQl5p5bwCw7BWquaZSzAPlwjlithJtp3pTImSqQRrb2Z8PHGigD4RZuNX6JYj6wj7O4TFLbCO/Mn/m8R+h6rYSUb3ekokRY6f/YukArN979jcW+V/S8g0eT/N3VN3kTqWbQ428m9/8k0P/1aIhF36PccEl6EhOcAUCrXKZXXWS3XKd2vc/TRBG9O5ELC17MmWubD2nKhUKZa26Ba2+D3P+4/MNCFwg59oWVeYhkzgN/JDR8deKBoD7Y+ljEjGZ0sosXVTvbc6RHirr2reNy1OXd6pJsQ+gqjk8VWFYmHrwBzW/n+uMPFiRwHB2I7ih8ciHFxIkd/3Omk5tCDV1t+2nNu5sxxpDFNx+huNhVT3/zMDz8usXC3ddaHBj1GHj/As08fwTS7Kt1HBTmyN29vdwAw+/wbwLVOJ3uAD1wi/dUH7Qei66PfyuRj4Ik9is+hglfbkbfR3cnZm7chlUWLdwmprtCohX4HUtlOcQjLYCu+fzGJH2QRKvP3UNz8bWk1qMxjGTOMThZ3kvgLI5AzFfo379UAAAAASUVORK5CYII=',
-        'encode1' : '',
-        'encode2' : ''
-    })
-    */
     
     return (
         <>
-        <returnContext.Provider value={{returnC, setRC}}>
+        <returnContext.Provider value={{returnC, r}}>
             <div className="container-fluid">
                 <div className="vertical-align-top content top p-3">
-                    <h2 className="font-weight-light">Single Upload</h2>
+                    <h2 className="font-weight-light">Multiple Upload</h2>
                     <hr/>
                     <div className="contain-box row">
                         <div className='col'>
@@ -280,8 +307,7 @@ const DropZone = () => {
                                     ref={fileInputRef}
                                     className="file-input"
                                     type="file"
-                                    /*multiple*/
-                                    single
+                                    multiple
                                     onChange={filesSelected}
                                 />
                             </div>
@@ -337,4 +363,4 @@ const DropZone = () => {
     );
 }
 
-export default DropZone;
+export default DropZoneM;

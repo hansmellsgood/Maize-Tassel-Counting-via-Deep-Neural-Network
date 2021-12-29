@@ -5,4 +5,5 @@ export { default as SingleUpload } from "./SingleUpload.jsx";
 export { default as DropZone } from "./DropZone.jsx";
 export { default as SideBarNav } from "./SideBarNav.jsx";
 export { default as Visualization } from "./Visualization.jsx";
+export { default as MultipleUpload } from "./MultipleUpload.jsx";
 export { default as TestSpace } from "./TestSpace.jsx";

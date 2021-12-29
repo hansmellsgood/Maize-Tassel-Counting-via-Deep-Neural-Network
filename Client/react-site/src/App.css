@@ -40,6 +40,7 @@ code {
   height: 100% !important;
   min-width: 250px !important;
   max-width: 250px !important;
+  width: 250px !important;
   display: block;
   top: 0;
   bottom: 0;
@@ -59,7 +60,7 @@ code {
   max-width: 50%;
 }
 
-.manual, .about, .contact, .upload, .test{
+.manual, .about, .contact, .upload, .test, .m-upload{
   width: 100vw;
   height: 100vh;
 }
@@ -115,4 +116,15 @@ code {
 
 .img-tt { 
   max-width: 100%;
+}
+
+.img-m { 
+  max-width: 70%;
+  max-height: 70%;
+}
+
+.center { 
+  display: block;
+  margin: auto;
+  text-align: center;
 }

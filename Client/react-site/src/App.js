@@ -8,7 +8,8 @@ import {
   ContactUs,
   SideBarNav,
   SingleUpload,
-  TestSpace
+  TestSpace,
+  MultipleUpload
 } from "./components";
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
                   <Route path="/UserManual" element={<UserManual />} />
                   <Route path="/ContactUs" element={<ContactUs />} />
                   <Route path="/SingleUpload" element={<SingleUpload />} />
+                  <Route path="/MultipleUpload" element={<MultipleUpload />} />
                   <Route path="/TestSpace" element={<TestSpace />} />
                 </Routes>
               </Router>

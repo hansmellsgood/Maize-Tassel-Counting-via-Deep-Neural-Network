@@ -79,6 +79,26 @@ IMG_STD = [1, 1, 1]
 INPUT_SIZE = 64
 OUTPUT_STRIDE = 8
 
+multipleTest = [
+    {
+        'id': 1,
+        'file_name': 'Display 1',
+        'image': './Screenshot2021-09-16134650.jpg',
+        'count': 20
+    },
+    {
+        'id': 2,
+        'file_name': 'Display 2',
+        'image': './Screenshot2021-09-16134650.jpg',
+        'count': 400
+    },
+    {
+        'id': 3,
+        'file_name': 'Display 3',
+        'image': './Screenshot2021-09-16134602.jpg',
+        'count': 25
+    }
+]
 
 @app.get("/ping")
 async def ping() -> dict:
@@ -161,6 +181,27 @@ async def predict(
         'count': pdcount
     }
 
+@app.post("/testArray")
+async def predict(
+        file: UploadFile = File(...)
+):
+    data = base64.b64encode(await file.read())
+    # image = read_file_as_image(await file.read())
+    # transform = transforms.Compose([
+    #    transforms.Resize((32, 32)),
+    #    transforms.ToTensor()
+    # ])
+    # img1 = transform(image).unsqueeze(0)
+
+    # img_batch = np.expand_dims(image, 0)
+    # predictions = MODEL.predict(img_batch)
+    # predicted_class = CLASS_NAMES[np.argmax(predictions[0])]
+    # confidence = np.max(predictions[0])
+    return {
+        # 'image_size': image.size,
+        # "transform_size": img1.size(),
+        'data': multipleTest
+    }
 
 class Normalizer:
     @staticmethod
