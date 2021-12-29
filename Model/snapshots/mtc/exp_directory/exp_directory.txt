@@ -40,3 +40,28 @@ epoch: 3, mae: 13.20, mse: 18.64, rmae: 50.54%, rmse: 112.44%, r2: 0.6762
 best mae: 13.20, best mse: 18.64, best_rmae: 50.54, best_rmse: 112.44, best_r2: 0.6762
 overall best mae: 13.20, overall best mse: 17.30, overall best_rmae: 50.54, overall best_rmse: 112.44, overall best_r2: nan
 epoch: 2, mae: 13.20, mse: 18.64, rmae: 50.54%, rmse: 112.44%, r2: 0.6762
+epoch: 4, mae: 14.65, mse: 20.79, rmae: 58.80%, rmse: 152.32%, r2: 0.5798
+epoch: 5, mae: 15.45, mse: 20.51, rmae: 65.94%, rmse: 141.52%, r2: 0.4547
+epoch: 6, mae: 17.53, mse: 22.37, rmae: 51.72%, rmse: 82.02%, r2: 0.7615
+epoch: 7, mae: 12.38, mse: 18.47, rmae: 57.17%, rmse: 138.68%, r2: 0.5858
+epoch: 8, mae: 12.24, mse: 16.87, rmae: 45.72%, rmse: 96.41%, r2: 0.7853
+epoch: 9, mae: 8.04, mse: 11.44, rmae: 32.55%, rmse: 74.08%, r2: 0.8505
+epoch: 10, mae: 24.17, mse: 31.17, rmae: 59.51%, rmse: 69.39%, r2: 0.4975
+epoch: 11, mae: 12.78, mse: 17.02, rmae: 45.03%, rmse: 113.47%, r2: 0.6998
+epoch: 12, mae: 21.44, mse: 26.39, rmae: 68.59%, rmse: 177.14%, r2: 0.7481
+epoch: 13, mae: 10.37, mse: 13.43, rmae: 53.84%, rmse: 131.67%, r2: 0.7933
+epoch: 14, mae: 6.78, mse: 9.17, rmae: 38.50%, rmse: 102.53%, r2: 0.8902
+epoch: 15, mae: 11.73, mse: 15.22, rmae: 39.20%, rmse: 66.28%, r2: 0.8850
+epoch: 16, mae: 10.23, mse: 13.39, rmae: 32.95%, rmse: 69.34%, r2: 0.8990
+epoch: 17, mae: 8.17, mse: 11.56, rmae: 27.60%, rmse: 60.00%, r2: 0.8839
+epoch: 18, mae: 13.95, mse: 17.63, rmae: 37.17%, rmse: 41.85%, r2: 0.8806
+epoch: 19, mae: 7.18, mse: 10.47, rmae: 34.27%, rmse: 86.67%, r2: 0.8631
+epoch: 20, mae: 12.43, mse: 16.01, rmae: 39.06%, rmse: 65.49%, r2: 0.8736
+epoch: 21, mae: 7.38, mse: 10.49, rmae: 46.76%, rmse: 129.37%, r2: 0.8658
+epoch: 22, mae: 11.38, mse: 14.25, rmae: 56.82%, rmse: 138.73%, r2: 0.8790
+epoch: 23, mae: 9.34, mse: 12.15, rmae: 63.01%, rmse: 190.27%, r2: 0.8133
+epoch: 24, mae: 8.18, mse: 10.99, rmae: 45.40%, rmse: 115.56%, r2: 0.8447
+epoch: 25, mae: 10.23, mse: 13.92, rmae: 33.92%, rmse: 72.06%, r2: 0.8552
+best mae: 6.78, best mse: 9.17, best_rmae: 38.50, best_rmse: 102.53, best_r2: 0.8902
+overall best mae: 6.78, overall best mse: 9.17, overall best_rmae: 27.60, overall best_rmse: 41.85, overall best_r2: nan
+epoch: 3, mae: 10.23, mse: 13.92, rmae: 33.92%, rmse: 72.06%, r2: 0.8552

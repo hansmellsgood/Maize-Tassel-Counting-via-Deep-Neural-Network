@@ -230,8 +230,9 @@ const DropZone = () => {
                 uploadRef.current.innerHTML = `<span class="error">Error Uploading File(s)</span>`;
                 progressRef.current.style.backgroundColor = 'red';
             })
-        }       
-        
+
+            
+        }
     }
 
     const closeUploadModal = () => {
