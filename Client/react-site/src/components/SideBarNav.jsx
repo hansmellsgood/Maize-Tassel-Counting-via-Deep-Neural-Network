@@ -30,6 +30,11 @@ function SideBarNav() {
                         </NavLink>
                     </MenuItem>
                     <MenuItem>
+                        <NavLink className="nav-link" to="/MultipleUpload">
+                            Multiple Upload
+                        </NavLink>
+                    </MenuItem>
+                    <MenuItem>
                         <NavLink className="nav-link" to="/ContactUs">
                             Contact Us
                         </NavLink>
