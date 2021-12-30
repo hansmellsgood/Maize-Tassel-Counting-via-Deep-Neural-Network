@@ -3,6 +3,7 @@ from fastapi import FastAPI, File, UploadFile, Form
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 import uvicorn
+from typing import List
 
 # Stats Modules
 import numpy as np
@@ -79,26 +80,9 @@ IMG_STD = [1, 1, 1]
 INPUT_SIZE = 64
 OUTPUT_STRIDE = 8
 
-multipleTest = [
-    {
-        'id': 1,
-        'file_name': 'Display 1',
-        'image': './Screenshot2021-09-16134650.jpg',
-        'count': 20
-    },
-    {
-        'id': 2,
-        'file_name': 'Display 2',
-        'image': './Screenshot2021-09-16134650.jpg',
-        'count': 400
-    },
-    {
-        'id': 3,
-        'file_name': 'Display 3',
-        'image': './Screenshot2021-09-16134602.jpg',
-        'count': 25
-    }
-]
+
+
+
 
 @app.get("/ping")
 async def ping() -> dict:
@@ -113,13 +97,6 @@ async def add_tests(test: dict) -> dict:
     }
 
 
-def read_image(x):
-    img_arr = np.array(Image.open(BytesIO(x)))
-    if len(img_arr.shape) == 2:  # grayscale
-        img_arr = np.tile(img_arr, [3, 1, 1]).transpose(1, 2, 0)
-    return img_arr
-
-
 @app.get("/predict")
 async def get_image() -> dict:
     return {'data1': single}
@@ -132,36 +109,12 @@ async def predict(
     image = await file.read()
     data = base64.b64encode(image)
 
-    # resize image
+    # preprocessing
     image = read_image(image)
-    h, w = image.shape[:2]
-    nh = int(np.ceil(h * 0.125))
-    nw = int(np.ceil(w * 0.125))
-    image = cv2.resize(image, (nw, nh), interpolation=cv2.INTER_CUBIC)
-
-    # Normalize
-    image = image.astype('float32')
-    # pixel normalization
-    image = (IMG_SCALE * image - IMG_MEAN) / IMG_STD
-    image = image.astype('float32')
-
-    # To Tensor
-    image = image.transpose((2, 0, 1))
-    image = torch.from_numpy(image)
-
-    # Zero Padding
-    psize = 32
-    h, w = image.size()[-2:]
-    ph, pw = (psize - h % psize), (psize - w % psize)
-    print(ph, pw)
-
-    (pl, pr) = (pw // 2, pw - pw // 2) if pw != psize else (0, 0)
-    (pt, pb) = (ph // 2, ph - ph // 2) if ph != psize else (0, 0)
-    if (ph != psize) or (pw != psize):
-        tmp_pad = [pl, pr, pt, pb]
-        print(tmp_pad)
-        image = F.pad(image, tmp_pad)
-    image = image.unsqueeze(0)
+    image = resize_image(image)
+    image = normalize_image(image)
+    image = tensor_image(image)
+    image = zero_padding_image(image)
 
     # load model
     model = torch.load('whole_model.pt')
@@ -181,27 +134,95 @@ async def predict(
         'count': pdcount
     }
 
+
 @app.post("/testArray")
 async def predict(
-        file: UploadFile = File(...)
+        files: List[UploadFile] = File(...)
 ):
-    data = base64.b64encode(await file.read())
-    # image = read_file_as_image(await file.read())
-    # transform = transforms.Compose([
-    #    transforms.Resize((32, 32)),
-    #    transforms.ToTensor()
-    # ])
-    # img1 = transform(image).unsqueeze(0)
+    multipleTest = [{
+        "file_name": None,
+        "image": None,
+        "count": 0
+    }]
+    for i, file in enumerate(files):
+        info = {}
+        image = await file.read()
+        data = base64.b64encode(image)
+        # preprocessing
+        image = read_image(image)
+        image = resize_image(image)
+        image = normalize_image(image)
+        image = tensor_image(image)
+        image = zero_padding_image(image)
 
-    # img_batch = np.expand_dims(image, 0)
-    # predictions = MODEL.predict(img_batch)
-    # predicted_class = CLASS_NAMES[np.argmax(predictions[0])]
-    # confidence = np.max(predictions[0])
+        # load model
+        model = torch.load('whole_model.pt')
+        model.eval()
+        output = model(image, is_normalize=False)
+        output = Normalizer.gpu_normalizer(output, image.size()[2], image.size()[3], INPUT_SIZE, OUTPUT_STRIDE)
+        # postprocessing
+        output = np.clip(output, 0, None)
+        pdcount = output.sum()
+        pdcount = math.floor(pdcount)
+        if i == 0:
+            multipleTest[0]['file_name'] = file.filename
+            multipleTest[0]['image'] = data
+            multipleTest[0]['count'] = pdcount
+        else:
+            info['file_name'] = file.filename
+            info['image'] = data
+            info['count'] = pdcount
+            multipleTest.append(info)
+
     return {
-        # 'image_size': image.size,
-        # "transform_size": img1.size(),
         'data': multipleTest
     }
+
+
+def read_image(image):
+    img_arr = np.array(Image.open(BytesIO(image)))
+    if len(img_arr.shape) == 2:  # grayscale
+        img_arr = np.tile(img_arr, [3, 1, 1]).transpose(1, 2, 0)
+    return img_arr
+
+
+def resize_image(image):
+    h, w = image.shape[:2]
+    nh = int(np.ceil(h * 0.125))
+    nw = int(np.ceil(w * 0.125))
+    image = cv2.resize(image, (nw, nh), interpolation=cv2.INTER_CUBIC)
+    return image
+
+
+def normalize_image(image):
+    # Normalize
+    image = image.astype('float32')
+    # pixel normalization
+    image = (IMG_SCALE * image - IMG_MEAN) / IMG_STD
+    image = image.astype('float32')
+    return image
+
+
+def tensor_image(image):
+    # To Tensor
+    image = image.transpose((2, 0, 1))
+    image = torch.from_numpy(image)
+    return image
+
+
+def zero_padding_image(image):
+    psize = 32
+    h, w = image.size()[-2:]
+    ph, pw = (psize - h % psize), (psize - w % psize)
+
+    (pl, pr) = (pw // 2, pw - pw // 2) if pw != psize else (0, 0)
+    (pt, pb) = (ph // 2, ph - ph // 2) if ph != psize else (0, 0)
+    if (ph != psize) or (pw != psize):
+        tmp_pad = [pl, pr, pt, pb]
+        image = F.pad(image, tmp_pad)
+    image = image.unsqueeze(0)
+    return image
+
 
 class Normalizer:
     @staticmethod
@@ -216,43 +237,6 @@ class Normalizer:
         x *= accm
         return x.squeeze().cpu().detach().numpy()
 
-
-class CountingModels(nn.Module):
-    def __init__(self, arc='tasselnetv2', input_size=64, output_stride=8):
-        super(CountingModels, self).__init__()
-        self.input_size = input_size
-        self.output_stride = output_stride
-
-        self.encoder = Encoder(arc)
-        self.counter = Counter(arc, input_size, output_stride)
-        if arc == 'tasselnetv2':
-            # changed
-            self.normalizer = Normalizer.gpu_normalizer
-
-        self.weight_init()
-
-    def forward(self, x, is_normalize=True):
-        imh, imw = x.size()[2:]
-        x = self.encoder(x)
-        x = self.counter(x)
-        if is_normalize:
-            x = self.normalizer(x, imh, imw, self.input_size, self.output_stride)
-        return x
-
-    def weight_init(self):
-        for m in self.modules():
-            if isinstance(m, nn.Conv2d):
-                nn.init.normal_(m.weight, std=0.01)
-                # nn.init.kaiming_uniform_(
-                #         m.weight,
-                #         mode='fan_in',
-                #         nonlinearity='relu'
-                #         )
-                if m.bias is not None:
-                    nn.init.constant_(m.bias, 0)
-            elif isinstance(m, nn.BatchNorm2d):
-                nn.init.constant_(m.weight, 1)
-                nn.init.constant_(m.bias, 0)
 
 class Encoder(nn.Module):
     def __init__(self, arc='tasselnetv2'):
@@ -284,6 +268,7 @@ class Encoder(nn.Module):
     def forward(self, x):
         x = self.encoder(x)
         return x
+
 
 class Counter(nn.Module):
     def __init__(self, arc='tasselnetv2', input_size=64, output_stride=8):
@@ -345,6 +330,7 @@ class CountingModels(nn.Module):
             elif isinstance(m, nn.BatchNorm2d):
                 nn.init.constant_(m.weight, 1)
                 nn.init.constant_(m.bias, 0)
+
 
 if __name__ == "__main__":
     uvicorn.run(app, host='localhost', port=8000)
