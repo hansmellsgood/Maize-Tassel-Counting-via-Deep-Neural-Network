@@ -2,8 +2,6 @@ import React, { useRef, useState, useEffect } from 'react';
 import axios from 'axios';
 import Scroll from 'react-scroll';
 import Button from 'react-bootstrap/Button';
-import imageee from './Screenshot2021-09-16134650.jpg';
-import imagee from './Screenshot2021-09-16134602.jpg'
 
 import './DropZone.css';
 

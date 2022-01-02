@@ -243,7 +243,7 @@ const DropZone = () => {
     const [returnC, setRC] = useState({
         'file_name' : 'empty',
         'count' : 0,
-        'encoded' : ''
+        'encoded' : "http://placehold.it/1024x768"
     })
 
     useEffect(() => {
