@@ -191,48 +191,46 @@ const DropZone = () => {
     const uploadFiles = async () => {
         uploadModalRef.current.style.display = 'block';
         uploadRef.current.innerHTML = 'File(s) Uploading...';
+        const formData = new FormData();
         for (let i = 0; i < validFiles.length; i++) {
-            const formData = new FormData();
-            formData.append('file', validFiles[0]);
+            formData.append('file', validFiles[i]);
             /*formData.append('key', '');*/
             /*https://api.imgbb.com/1/upload8 */
-            await axios.post('http://localhost:8000/predict', formData, {
-                /*
-                headers: {
-                    'Content-Type': "multipart/form-data"
-                },
-                */
-                onUploadProgress: (progressEvent) => {
-                    const uploadPercentage = Math.floor((progressEvent.loaded / progressEvent.total) * 100);
-                    progressRef.current.innerHTML = `${uploadPercentage}%`;
-                    progressRef.current.style.width = `${uploadPercentage}%`;
-
-                    if (uploadPercentage === 100) {
-                        uploadRef.current.innerHTML = 'File(s) Uploaded';
-                        validFiles.length = 0;
-                        setValidFiles([...validFiles]);
-                        setSelectedFiles([...validFiles]);
-                        setUnsupportedFiles([...validFiles]);
-                    }
-                },
-            })
-            .then ((rr) => {
-                const rrr = rr.data;
-                const rx = 'data:image/jpeg;base64,' + rrr.encode;
-                setRC(previousState => {
-                    return { ...previousState, 'file_name' : rrr.file_name, 'count' : rrr.count, 'encoded' : rx}});
-                
-                /*
-                setIMG(previousState => {
-                    return { ...previousState, 'encode': rx}}); */
-            })
-            .catch(() => {
-                uploadRef.current.innerHTML = `<span class="error">Error Uploading File(s)</span>`;
-                progressRef.current.style.backgroundColor = 'red';
-            })
-
-            
         }
+        await axios.post('http://localhost:8000/predict', formData, {
+            /*
+            headers: {
+                'Content-Type': "multipart/form-data"
+            },
+            */
+            onUploadProgress: (progressEvent) => {
+                const uploadPercentage = Math.floor((progressEvent.loaded / progressEvent.total) * 100);
+                progressRef.current.innerHTML = `${uploadPercentage}%`;
+                progressRef.current.style.width = `${uploadPercentage}%`;
+
+                if (uploadPercentage === 100) {
+                    uploadRef.current.innerHTML = 'File(s) Uploaded';
+                    validFiles.length = 0;
+                    setValidFiles([...validFiles]);
+                    setSelectedFiles([...validFiles]);
+                    setUnsupportedFiles([...validFiles]);
+                }
+            },
+        })
+        .then ((rr) => {
+            const rrr = rr.data;
+            const rx = 'data:image/jpeg;base64,' + rrr.encode;
+            setRC(previousState => {
+                return { ...previousState, 'file_name' : rrr.file_name, 'count' : rrr.count, 'encoded' : rx}});
+            
+            /*
+            setIMG(previousState => {
+                return { ...previousState, 'encode': rx}}); */
+        })
+        .catch(() => {
+            uploadRef.current.innerHTML = `<span class="error">Error Uploading File(s)</span>`;
+            progressRef.current.style.backgroundColor = 'red';
+        })
     }
 
     const closeUploadModal = () => {

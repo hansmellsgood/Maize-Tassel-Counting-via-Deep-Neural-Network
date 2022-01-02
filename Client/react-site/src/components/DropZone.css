@@ -46,12 +46,12 @@
     width: 100%;
     min-width: 200px;
     height: 120px;
-    border: 4px dashed #4aa1f3;
+    border: 4px dashed #326d32;
 }
 
 .drop-message {
     text-align: center;
-    color: #4aa1f3;
+    color: #326d32;
     font-family: Arial;
     font-size: 20px;
 }

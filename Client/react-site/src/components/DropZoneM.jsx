@@ -78,9 +78,10 @@ function Visualization() {
 
     return (
         <>
-        <div className='visualization contain-box row'>
+        <div className='visualization contain-box row pt-0'>
+            
             {r.map((r) => (
-                    <div className='col-4'>
+                    <div className='col-md-6 col-lg-4'>
                         <div className='center'>
                             <img className='img-m mb-lg-10 ' src={r.image}/>
                         
@@ -352,6 +353,11 @@ const DropZoneM = () => {
                 <div className="vertical-align-top content bottom p-3">
                     <h2 className="font-weight-light">Visualization</h2>
                     <hr/>
+                    <div className='btn group multiple-btn ml-3 mr-3 mb-3 p-0'>
+                        <Button variant="secondary" size="sm" className="visualization-btnM" >Count Maize Tassels</Button>
+                        <Button variant="secondary" size="sm" className="visualization-btnM" >Density Map</Button>
+                        <Button variant="secondary" size="sm" className="visualization-btnM" >Download Image</Button>
+                    </div>
                     <Visualization />
                 </div> 
             </div>

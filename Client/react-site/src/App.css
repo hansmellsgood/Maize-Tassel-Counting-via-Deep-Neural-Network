@@ -72,10 +72,6 @@ code {
   margin: 10px 0;
 }
 
-.body-text {
-  padding: 5px;
-}
-
 .img-fluid {
   min-height:50%;
   width: inherit;
@@ -94,6 +90,21 @@ code {
   padding: 8px 15px;
   margin: 0px 0px 5px 0px;
   display:block;
+}
+
+.visualization-btnM {
+  color: white;
+  text-transform: uppercase;
+  outline: none;
+  font-weight: bold;
+  padding: 8px 15px;
+  margin: 0px 5px 0px 0px;
+  display:block;
+}
+
+.multiple-btn { 
+  flex-direction: row;
+  display: flex;
 }
 
 .resultsDisplay p{
