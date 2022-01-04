@@ -10,6 +10,58 @@ const returnContext = React.createContext({
 
 })
 
+const RadioGroup = () => {
+    const [option, setOption] = React.useState('one');
+
+  const handleOneChange = () => {
+    setOption('one');
+  };
+
+  const handleTwoChange = () => {
+    setOption('two');
+  };
+
+  const handleThreeChange = () => {
+    setOption('three');
+  };
+
+  return (
+    <div>
+        <h5>Select Model</h5>
+        <div>
+            <RadioButton
+                label=" Option 1"
+                value={option === 'one'}
+                onChange={handleOneChange}
+            />
+        </div>
+        <div>
+            <RadioButton
+                label=" Option 2"
+                value={option === 'two'}
+                onChange={handleTwoChange}
+            />
+        </div>
+        <div>
+            <RadioButton
+                label=" Option 3"
+                value={option === 'three'}
+                onChange={handleThreeChange}
+            />
+        </div>
+    </div>
+  );
+};
+
+const RadioButton = ({ label, value, onChange }) => {
+    return (
+      <label>
+        <input type="radio" checked={value} onChange={onChange} />
+        {label}
+      </label>
+    );
+  };
+
 function Visualization() {
     const {returnC, setRC} = React.useContext(returnContext)
     /* unused */
@@ -49,16 +101,23 @@ function Visualization() {
                 />
             </div>
             <div className='col'>
-                <div className='btn group p-0'>
+                {/*<div className='btn group p-0'>
                     <Button variant="secondary" size="sm" className="visualization-btn" onClick={countBtn}>Count Maize Tassels</Button>
                     <Button variant="secondary" size="sm" className="visualization-btn" onClick={densityMap}>Density Map</Button>
                     <Button variant="secondary" size="sm" className="visualization-btn" onClick={downloadBtn}>Download Image</Button>
                 </div>
-                <div className='single-results pt-3'>
+                */}
+                <div className='single-results m-2'>
                     <h5>Results</h5>
                     <div className='resultsDisplay'>
-                        <p>File Name: {returnC.file_name} <br/>Count: {returnC.count}</p>    
+                        File: {returnC.file_name} <br/>Count: {returnC.count}    
                     </div>
+                </div>
+                <div className='select-model m-2'>
+                    <RadioGroup />
+                </div>
+                <div className='btn p-0 m-2'>
+                    <Button variant="secondary" size="sm" className="visualization-btn" >Toggle Visualisation</Button>
                 </div>
             </div>
         </div>

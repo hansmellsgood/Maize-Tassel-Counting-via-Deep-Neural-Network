@@ -42,7 +42,7 @@ function SideBarNav() {
                 </Menu>
             </SidebarContent>
             <SidebarFooter>
-                <p>Footer</p>
+                <p className='footerP'>Developed by the students from the project group FYP-21-S4-23<br/></p>
             </SidebarFooter>
         </ProSidebar>
     );

@@ -139,3 +139,7 @@ code {
   margin: auto;
   text-align: center;
 }
+
+.footerP { 
+  font-size: 8px;
+}

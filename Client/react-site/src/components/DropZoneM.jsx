@@ -14,46 +14,6 @@ function Visualization() {
     const {returnC, r} = React.useContext(returnContext)
     
     const [display, setDisplay] = useState([])
-    /*
-    const [display, setDisplay] = useState([
-        {
-            id: 1,
-            file_name: 'Display 1',
-            image: imageee,
-            count: 0
-        },
-        {
-            id: 2, 
-            file_name: 'Display 2', 
-            image: imagee, 
-            count: 22
-        },
-        {
-            id: 3, 
-            file_name: 'Display 3', 
-            image: imageee, 
-            count: 400
-        },
-        {
-            id: 4,
-            file_name: 'Display 4',
-            image: imagee,
-            count: 0
-        },
-        {
-            id: 5, 
-            file_name: 'Display 5', 
-            image: imageee, 
-            count: 22
-        },
-        {
-            id: 6, 
-            file_name: 'Display 6', 
-            image: imageee, 
-            count: 400
-        }
-    ]);
-    */
 
     const updateInfo = () => {
         setDisplay(previousState=> {
@@ -98,6 +58,59 @@ function Visualization() {
     )
     
 }
+
+const RadioGroup = () => {
+    const [option, setOption] = React.useState('one');
+
+  const handleOneChange = () => {
+    setOption('one');
+  };
+
+  const handleTwoChange = () => {
+    setOption('two');
+  };
+
+  const handleThreeChange = () => {
+    setOption('three');
+  };
+
+  return (
+    <div>
+        <h5>Select Model</h5>
+        <div>
+            <RadioButton
+                label=" Option 1"
+                value={option === 'one'}
+                onChange={handleOneChange}
+            />
+        </div>
+        <div>
+            <RadioButton
+                label=" Option 2"
+                value={option === 'two'}
+                onChange={handleTwoChange}
+            />
+        </div>
+        <div>
+            <RadioButton
+                label=" Option 3"
+                value={option === 'three'}
+                onChange={handleThreeChange}
+            />
+        </div>
+    </div>
+  );
+};
+
+const RadioButton = ({ label, value, onChange }) => {
+    return (
+      <label>
+        <input type="radio" checked={value} onChange={onChange} />
+        {label}
+      </label>
+    );
+  };
+
 
 const DropZoneM = () => {
     const fileInputRef = useRef();
@@ -265,9 +278,6 @@ const DropZoneM = () => {
             progressRef.current.style.backgroundColor = 'red';
         })            
     }
-    
-
-    
 
     const closeUploadModal = () => {
         uploadModalRef.current.style.display = 'none';
@@ -353,12 +363,32 @@ const DropZoneM = () => {
                 <div className="vertical-align-top content bottom p-3">
                     <h2 className="font-weight-light">Visualization</h2>
                     <hr/>
+                    <div className='row'>
+                    <div className='col-10'>
+                        <Visualization />
+                    </div>
+                    <div className='col-2'>
+                        <RadioGroup />
+                        {/*
+                        <div className='btn group'>
+                            <Button variant="secondary" size="sm" className="visualization-btn" >Count Maize Tassels</Button>
+                            <Button variant="secondary" size="sm" className="visualization-btn" >Density Map</Button>
+                            <Button variant="secondary" size="sm" className="visualization-btn" >Download Image</Button>
+                        </div>
+                        */}
+                        <div className='btn p-0 mt-3'>
+                            <Button variant="secondary" size="sm" className="visualization-btn" >Toggle Visualisation</Button>
+                        </div>
+                    </div>
+                    </div>
+                    {/*}
                     <div className='btn group multiple-btn ml-3 mr-3 mb-3 p-0'>
                         <Button variant="secondary" size="sm" className="visualization-btnM" >Count Maize Tassels</Button>
                         <Button variant="secondary" size="sm" className="visualization-btnM" >Density Map</Button>
                         <Button variant="secondary" size="sm" className="visualization-btnM" >Download Image</Button>
                     </div>
-                    <Visualization />
+                    */}
+                    
                 </div> 
             </div>
         </returnContext.Provider>
