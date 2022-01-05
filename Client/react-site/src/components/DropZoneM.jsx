@@ -43,7 +43,7 @@ function Visualization() {
             {r.map((r) => (
                     <div className='col-md-6 col-lg-4'>
                         <div className='center'>
-                            <img className='img-m mb-lg-10 ' src={r.image}/>
+                            <img className='img-m mb-lg-10 ' src={r.density_image}/>
                         
                             <div className='single-results p-2'>
                                 <div className='resultsDisplay'>
@@ -268,7 +268,8 @@ const DropZoneM = () => {
             console.log(rrr.data);
             const r4 = rrr.data;
             for (let i = 0; i < r4.length; i++) {
-                r4[i].image = 'data:image/jpeg;base64,' + r4[i].image 
+                r4[i].image = 'data:image/jpeg;base64,' + r4[i].image
+                r4[i].density_image = 'data:image/jpeg;base64,' + r4[i].density_image
             }
             setR(r4)
             //console.log(r);
