@@ -10,10 +10,13 @@ import numpy as np
 import math
 
 # Images Modules
+import io
 from io import BytesIO
 from PIL import Image
 import cv2
 import base64
+import matplotlib.pyplot as plt
+import matplotlib.cm as cm
 
 # Torch Modules
 import torch
@@ -110,6 +113,7 @@ async def predict(
     data = base64.b64encode(image)
 
     # preprocessing
+    test_image = read_image(image)
     image = read_image(image)
     image = resize_image(image)
     image = normalize_image(image)
@@ -119,17 +123,21 @@ async def predict(
     # load model
     model = torch.load('whole_model.pt')
     model.eval()
-    output = model(image, is_normalize=False)
-    output = Normalizer.gpu_normalizer(output, image.size()[2], image.size()[3], INPUT_SIZE, OUTPUT_STRIDE)
-    # postprocessing
-    output = np.clip(output, 0, None)
-    pdcount = output.sum()
-    pdcount = math.floor(pdcount)
+    with torch.no_grad():
+        output = model(image, is_normalize=False)
+        output_save = output
+        output = Normalizer.gpu_normalizer(output, image.size()[2], image.size()[3], INPUT_SIZE, OUTPUT_STRIDE)
+        # postprocessing
+        output = np.clip(output, 0, None)
+        pdcount = output.sum()
+        pdcount = math.floor(pdcount)
+        density_image = density_map(output_save, image, test_image)
 
+    
     return {
         'file_name': file.filename,
         'encode': data,
-        'encode1': '',
+        'encode1': density_image,
         'encode2': '',
         'count': pdcount
     }
@@ -142,13 +150,15 @@ async def predict(
     multipleTest = [{
         "file_name": None,
         "image": None,
-        "count": 0
+        "count": 0,
+        "density_image":None
     }]
     for i, file in enumerate(files):
         info = {}
         image = await file.read()
         data = base64.b64encode(image)
         # preprocessing
+        test_image = read_image(image)
         image = read_image(image)
         image = resize_image(image)
         image = normalize_image(image)
@@ -158,21 +168,26 @@ async def predict(
         # load model
         model = torch.load('whole_model.pt')
         model.eval()
-        output = model(image, is_normalize=False)
-        output = Normalizer.gpu_normalizer(output, image.size()[2], image.size()[3], INPUT_SIZE, OUTPUT_STRIDE)
-        # postprocessing
-        output = np.clip(output, 0, None)
-        pdcount = output.sum()
-        pdcount = math.floor(pdcount)
-        if i == 0:
-            multipleTest[0]['file_name'] = file.filename
-            multipleTest[0]['image'] = data
-            multipleTest[0]['count'] = pdcount
-        else:
-            info['file_name'] = file.filename
-            info['image'] = data
-            info['count'] = pdcount
-            multipleTest.append(info)
+        with torch.no_grad():
+            output = model(image, is_normalize=False)
+            output_save = output
+            output = Normalizer.gpu_normalizer(output, image.size()[2], image.size()[3], INPUT_SIZE, OUTPUT_STRIDE)
+            # postprocessing
+            output = np.clip(output, 0, None)
+            pdcount = output.sum()
+            pdcount = math.floor(pdcount)
+            density_image = density_map(output_save, image, test_image)
+            if i == 0:
+                multipleTest[0]['file_name'] = file.filename
+                multipleTest[0]['image'] = data
+                multipleTest[0]['count'] = pdcount
+                multipleTest[0]['density_image'] = density_image
+            else:
+                info['file_name'] = file.filename
+                info['image'] = data
+                info['count'] = pdcount
+                info['density_image'] = density_image
+                multipleTest.append(info)
 
     return {
         'data': multipleTest
@@ -223,6 +238,46 @@ def zero_padding_image(image):
     image = image.unsqueeze(0)
     return image
 
+
+def recover_countmap(pred, image, patch_sz, stride):
+    pred = pred.reshape(-1)
+    imH, imW = image.shape[2:4]
+    cntMap = np.zeros((imH, imW), dtype=float)
+    norMap = np.zeros((imH, imW), dtype=float)
+
+    H = np.arange(0, imH - patch_sz + 1, stride)
+    W = np.arange(0, imW - patch_sz + 1, stride)
+    cnt = 0
+    for h in H:
+        for w in W:
+            pixel_cnt = pred[cnt] / patch_sz / patch_sz
+            cntMap[h:h + patch_sz, w:w + patch_sz] += pixel_cnt
+            norMap[h:h + patch_sz, w:w + patch_sz] += np.ones((patch_sz, patch_sz))
+            cnt += 1
+    return cntMap / (norMap + 1e-12)
+
+
+def density_map(output_save, image, test_image):
+    # density map
+    cmap = plt.cm.get_cmap('jet')
+    output_save = np.clip(output_save.squeeze().cpu().numpy(), 0, None)
+    output_save = recover_countmap(output_save, image, INPUT_SIZE, OUTPUT_STRIDE)
+    output_save = output_save / (output_save.max() + 1e-12)
+    output_save = cmap(output_save) * 255.
+    # image composition
+    nh, nw = output_save.shape[:2]
+    test_image = cv2.resize(test_image, (nw, nh), interpolation=cv2.INTER_CUBIC)
+    output_save = 0.5 * test_image + 0.5 * output_save[:, :, 0:3]
+
+    fig, ax = plt.subplots(figsize=(15, 5))
+    ax.imshow(output_save.astype(np.uint8))
+    ax.get_xaxis().set_visible(False)
+    ax.get_yaxis().set_visible(False)
+    my_stringIObytes = io.BytesIO()
+    plt.savefig(my_stringIObytes, format='jpg', bbox_inches='tight', dpi=300)
+    my_stringIObytes.seek(0)
+    density_map = base64.b64encode(my_stringIObytes.read())
+    return density_map
 
 class Normalizer:
     @staticmethod

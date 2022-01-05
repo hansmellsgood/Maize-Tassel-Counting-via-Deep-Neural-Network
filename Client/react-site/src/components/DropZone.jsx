@@ -96,7 +96,7 @@ function Visualization() {
             <div className='col img-right'>
                 <img 
                     className="img-tt mb-lg-10"
-                    src= {returnC.encoded}
+                    src= {returnC.encoded1}
                     alt="http://placehold.it/1024x768"
                 />
             </div>
@@ -279,8 +279,9 @@ const DropZone = () => {
         .then ((rr) => {
             const rrr = rr.data;
             const rx = 'data:image/jpeg;base64,' + rrr.encode;
+            const rxx = 'data:image/jpeg;base64,' + rrr.encode1;
             setRC(previousState => {
-                return { ...previousState, 'file_name' : rrr.file_name, 'count' : rrr.count, 'encoded' : rx}});
+                return { ...previousState, 'file_name' : rrr.file_name, 'count' : rrr.count, 'encoded' : rx, 'encoded1':rxx}});
             
             /*
             setIMG(previousState => {
