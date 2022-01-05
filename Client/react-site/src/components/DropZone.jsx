@@ -64,12 +64,24 @@ const RadioButton = ({ label, value, onChange }) => {
 
 function Visualization() {
     const {returnC, setRC} = React.useContext(returnContext)
-    /* unused */
-    const [display, setDisplay] = useState({
-        file_name: 'Display Name',
-        count: 0
-    });
 
+    const changeIMG = () => {
+       
+        if (returnC.display_img === returnC.image) {
+            const here = returnC.density_img
+            setRC(previousState=> { 
+                return { ...previousState, 'display_img' : here}
+            })
+        }
+        else {
+            const here = returnC.image
+            setRC(previousState=> {
+                return { ...previousState, 'display_img' : here}
+            })
+        }
+    }
+
+    /*
     const updateInfo = () => {
         setRC(previousState=> {
             return{ ...previousState, 'file_name': returnC.file_name}
@@ -87,6 +99,7 @@ function Visualization() {
     const densityMap = () => {
 
     };
+    */
 
     useEffect(() => {
     })
@@ -96,8 +109,8 @@ function Visualization() {
             <div className='col img-right'>
                 <img 
                     className="img-tt mb-lg-10"
-                    src= {returnC.encoded1}
-                    alt="http://placehold.it/1024x768"
+                    src= {returnC.display_img}
+                    alt=""
                 />
             </div>
             <div className='col'>
@@ -117,7 +130,7 @@ function Visualization() {
                     <RadioGroup />
                 </div>
                 <div className='btn p-0 m-2'>
-                    <Button variant="secondary" size="sm" className="visualization-btn" >Toggle Visualisation</Button>
+                    <Button variant="secondary" size="sm" className="visualization-btn" onClick={changeIMG}>Toggle Visualisation</Button>
                 </div>
             </div>
         </div>
@@ -135,6 +148,13 @@ const DropZone = () => {
     const [validFiles, setValidFiles] = useState([]);
     const [unsupportedFiles, setUnsupportedFiles] = useState([]);
     const [errorMessage, setErrorMessage] = useState('');
+    const [returnC, setRC] = useState({
+        'file_name' : '',
+        'count' : 0,
+        'image' : "",
+        'density_img' : "",
+        'display_img' : ""
+    });
 
     useEffect(() => {
         let filteredArr = selectedFiles.reduce((acc, current) => {
@@ -278,14 +298,10 @@ const DropZone = () => {
         })
         .then ((rr) => {
             const rrr = rr.data;
-            const rx = 'data:image/jpeg;base64,' + rrr.encode;
-            const rxx = 'data:image/jpeg;base64,' + rrr.encode1;
+            const rx = 'data:image/jpeg;base64,' + rrr.image;
+            const rxx = 'data:image/jpeg;base64,' + rrr.density_img;
             setRC(previousState => {
-                return { ...previousState, 'file_name' : rrr.file_name, 'count' : rrr.count, 'encoded' : rx, 'encoded1':rxx}});
-            
-            /*
-            setIMG(previousState => {
-                return { ...previousState, 'encode': rx}}); */
+                return { ...previousState, 'file_name' : rrr.file_name, 'count' : rrr.count, 'image' : rx, 'density_img':rxx, 'display_img' : rx}});
         })
         .catch(() => {
             uploadRef.current.innerHTML = `<span class="error">Error Uploading File(s)</span>`;
@@ -297,24 +313,6 @@ const DropZone = () => {
         uploadModalRef.current.style.display = 'none';
     }
 
-
-    const [returnC, setRC] = useState({
-        'file_name' : 'empty',
-        'count' : 0,
-        'encoded' : "http://placehold.it/1024x768"
-    })
-
-    useEffect(() => {
-    })
-
-    /*
-    const [returnIMG, setIMG] = useState({
-        'encode' : 'data:image/jpeg;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAApgAAAKYB3X3/OAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAANCSURBVEiJtZZPbBtFFMZ/M7ubXdtdb1xSFyeilBapySVU8h8OoFaooFSqiihIVIpQBKci6KEg9Q6H9kovIHoCIVQJJCKE1ENFjnAgcaSGC6rEnxBwA04Tx43t2FnvDAfjkNibxgHxnWb2e/u992bee7tCa00YFsffekFY+nUzFtjW0LrvjRXrCDIAaPLlW0nHL0SsZtVoaF98mLrx3pdhOqLtYPHChahZcYYO7KvPFxvRl5XPp1sN3adWiD1ZAqD6XYK1b/dvE5IWryTt2udLFedwc1+9kLp+vbbpoDh+6TklxBeAi9TL0taeWpdmZzQDry0AcO+jQ12RyohqqoYoo8RDwJrU+qXkjWtfi8Xxt58BdQuwQs9qC/afLwCw8tnQbqYAPsgxE1S6F3EAIXux2oQFKm0ihMsOF71dHYx+f3NND68ghCu1YIoePPQN1pGRABkJ6Bus96CutRZMydTl+TvuiRW1m3n0eDl0vRPcEysqdXn+jsQPsrHMquGeXEaY4Yk4wxWcY5V/9scqOMOVUFthatyTy8QyqwZ+kDURKoMWxNKr2EeqVKcTNOajqKoBgOE28U4tdQl5p5bwCw7BWquaZSzAPlwjlithJtp3pTImSqQRrb2Z8PHGigD4RZuNX6JYj6wj7O4TFLbCO/Mn/m8R+h6rYSUb3ekokRY6f/YukArN979jcW+V/S8g0eT/N3VN3kTqWbQ428m9/8k0P/1aIhF36PccEl6EhOcAUCrXKZXXWS3XKd2vc/TRBG9O5ELC17MmWubD2nKhUKZa26Ba2+D3P+4/MNCFwg59oWVeYhkzgN/JDR8deKBoD7Y+ljEjGZ0sosXVTvbc6RHirr2reNy1OXd6pJsQ+gqjk8VWFYmHrwBzW/n+uMPFiRwHB2I7ih8ciHFxIkd/3Omk5tCDV1t+2nNu5sxxpDFNx+huNhVT3/zMDz8usXC3ddaHBj1GHj/As08fwTS7Kt1HBTmyN29vdwAw+/wbwLVOJ3uAD1wi/dUH7Qei66PfyuRj4Ik9is+hglfbkbfR3cnZm7chlUWLdwmprtCohX4HUtlOcQjLYCu+fzGJH2QRKvP3UNz8bWk1qMxjGTOMThZ3kvgLI5AzFfo379UAAAAASUVORK5CYII=',
-        'encode1' : '',
-        'encode2' : ''
-    })
-    */
-    
     return (
         <>
         <returnContext.Provider value={{returnC, setRC}}>

@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, useReducer } from 'react';
 import axios from 'axios';
 import Scroll from 'react-scroll';
 import Button from 'react-bootstrap/Button';
@@ -6,44 +6,23 @@ import Button from 'react-bootstrap/Button';
 import './DropZone.css';
 
 const returnContext = React.createContext({
-    returnC: {}, fetchRC: () => {}, r: []
+    r: [], setR: () => {}
 
 })
 
 function Visualization() {
-    const {returnC, r} = React.useContext(returnContext)
-    
-    const [display, setDisplay] = useState([])
-
-    const updateInfo = () => {
-        setDisplay(previousState=> {
-            return{ ...previousState, 'file_name': returnC.file_name}
-        })
-    }
-
-    const countBtn = () => {
-        setDisplay(previousState=> {
-            return{ ...previousState, 'count': returnC.count}
-        
-    })};
-    const downloadBtn = () => {
-        
-    };
-    const densityMap = () => {
-
-    };
+    const {r, setR} = React.useContext(returnContext)
 
     useEffect(() => {
-    })
-
+    }, []);
+    
     return (
         <>
-        <div className='visualization contain-box row pt-0'>
-            
+        <div className='visualization multi-box row p-0 m-0'>
             {r.map((r) => (
                     <div className='col-md-6 col-lg-4'>
                         <div className='center'>
-                            <img className='img-m mb-lg-10 ' src={r.density_image}/>
+                            <img className='img-m mb-lg-10 ' src={r.display_img}/>
                         
                             <div className='single-results p-2'>
                                 <div className='resultsDisplay'>
@@ -52,11 +31,9 @@ function Visualization() {
                             </div>
                         </div> 
                     </div>
-            
             ))}
         </div></>
     )
-    
 }
 
 const RadioGroup = () => {
@@ -123,6 +100,9 @@ const DropZoneM = () => {
     const [validFiles, setValidFiles] = useState([]);
     const [unsupportedFiles, setUnsupportedFiles] = useState([]);
     const [errorMessage, setErrorMessage] = useState('');
+    const [r, setR] = useState([]);
+    const [display, setDisplay] = useState([]);
+    const [rerender, setRerender] = useState(false);
 
     useEffect(() => {
         let filteredArr = selectedFiles.reduce((acc, current) => {
@@ -134,7 +114,6 @@ const DropZoneM = () => {
             }
         }, []);
         setValidFiles([...filteredArr]);
-        
     }, [selectedFiles]);
 
     const preventDefault = (e) => {
@@ -234,7 +213,6 @@ const DropZoneM = () => {
         modalRef.current.style.display = "none";
         modalImageRef.current.style.backgroundImage = 'none';
     }
-    const [r, setR] = useState([])
 
     const uploadFiles = async () => {
         uploadModalRef.current.style.display = 'block';
@@ -265,14 +243,13 @@ const DropZoneM = () => {
         })
         .then ((rr) => {
             const rrr = rr.data;
-            console.log(rrr.data);
             const r4 = rrr.data;
             for (let i = 0; i < r4.length; i++) {
                 r4[i].image = 'data:image/jpeg;base64,' + r4[i].image
-                r4[i].density_image = 'data:image/jpeg;base64,' + r4[i].density_image
+                r4[i].density_img = 'data:image/jpeg;base64,' + r4[i].density_img
+                r4[i].display_img = r4[i].image
             }
             setR(r4)
-            //console.log(r);
         })
         .catch(() => {
             uploadRef.current.innerHTML = `<span class="error">Error Uploading File(s)</span>`;
@@ -284,18 +261,21 @@ const DropZoneM = () => {
         uploadModalRef.current.style.display = 'none';
     }
 
-    const [returnC, setRC] = useState({
-        'file_name' : 'empty',
-        'count' : 0,
-        'encoded' : 'data:image/jpeg;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAApgAAAKYB3X3/OAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAANCSURBVEiJtZZPbBtFFMZ/M7ubXdtdb1xSFyeilBapySVU8h8OoFaooFSqiihIVIpQBKci6KEg9Q6H9kovIHoCIVQJJCKE1ENFjnAgcaSGC6rEnxBwA04Tx43t2FnvDAfjkNibxgHxnWb2e/u992bee7tCa00YFsffekFY+nUzFtjW0LrvjRXrCDIAaPLlW0nHL0SsZtVoaF98mLrx3pdhOqLtYPHChahZcYYO7KvPFxvRl5XPp1sN3adWiD1ZAqD6XYK1b/dvE5IWryTt2udLFedwc1+9kLp+vbbpoDh+6TklxBeAi9TL0taeWpdmZzQDry0AcO+jQ12RyohqqoYoo8RDwJrU+qXkjWtfi8Xxt58BdQuwQs9qC/afLwCw8tnQbqYAPsgxE1S6F3EAIXux2oQFKm0ihMsOF71dHYx+f3NND68ghCu1YIoePPQN1pGRABkJ6Bus96CutRZMydTl+TvuiRW1m3n0eDl0vRPcEysqdXn+jsQPsrHMquGeXEaY4Yk4wxWcY5V/9scqOMOVUFthatyTy8QyqwZ+kDURKoMWxNKr2EeqVKcTNOajqKoBgOE28U4tdQl5p5bwCw7BWquaZSzAPlwjlithJtp3pTImSqQRrb2Z8PHGigD4RZuNX6JYj6wj7O4TFLbCO/Mn/m8R+h6rYSUb3ekokRY6f/YukArN979jcW+V/S8g0eT/N3VN3kTqWbQ428m9/8k0P/1aIhF36PccEl6EhOcAUCrXKZXXWS3XKd2vc/TRBG9O5ELC17MmWubD2nKhUKZa26Ba2+D3P+4/MNCFwg59oWVeYhkzgN/JDR8deKBoD7Y+ljEjGZ0sosXVTvbc6RHirr2reNy1OXd6pJsQ+gqjk8VWFYmHrwBzW/n+uMPFiRwHB2I7ih8ciHFxIkd/3Omk5tCDV1t+2nNu5sxxpDFNx+huNhVT3/zMDz8usXC3ddaHBj1GHj/As08fwTS7Kt1HBTmyN29vdwAw+/wbwLVOJ3uAD1wi/dUH7Qei66PfyuRj4Ik9is+hglfbkbfR3cnZm7chlUWLdwmprtCohX4HUtlOcQjLYCu+fzGJH2QRKvP3UNz8bWk1qMxjGTOMThZ3kvgLI5AzFfo379UAAAAASUVORK5CYII='
-    })
+    const ChangeIMG = () => {
+        for (let i = 0; i < r.length; i++) {
+            if (r[i].display_img === r[i].image) {
+                r[i].display_img = r[i].density_img;
+            }             
+            else {
+                r[i].display_img= r[i].image;
+            }
+        }
+        setRerender(!rerender);
+    };
 
-    useEffect(() => {
-    })
-    
     return (
         <>
-        <returnContext.Provider value={{returnC, r}}>
+        <returnContext.Provider value={{r, setR, display, setDisplay}}>
             <div className="container-fluid">
                 <div className="vertical-align-top content top p-3">
                     <h2 className="font-weight-light">Multiple Upload</h2>
@@ -378,7 +358,7 @@ const DropZoneM = () => {
                         </div>
                         */}
                         <div className='btn p-0 mt-3'>
-                            <Button variant="secondary" size="sm" className="visualization-btn" >Toggle Visualisation</Button>
+                            <Button variant="secondary" size="sm" className="visualization-btn" onClick={ChangeIMG}>Toggle Visualisation</Button>
                         </div>
                     </div>
                     </div>

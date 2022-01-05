@@ -131,14 +131,13 @@ async def predict(
         output = np.clip(output, 0, None)
         pdcount = output.sum()
         pdcount = math.floor(pdcount)
-        density_image = density_map(output_save, image, test_image)
+        density_img = density_map(output_save, image, test_image)
 
     
     return {
         'file_name': file.filename,
-        'encode': data,
-        'encode1': density_image,
-        'encode2': '',
+        'image': data,
+        'density_img': density_img,
         'count': pdcount
     }
 
@@ -151,7 +150,7 @@ async def predict(
         "file_name": None,
         "image": None,
         "count": 0,
-        "density_image":None
+        "density_img":None
     }]
     for i, file in enumerate(files):
         info = {}
@@ -176,17 +175,17 @@ async def predict(
             output = np.clip(output, 0, None)
             pdcount = output.sum()
             pdcount = math.floor(pdcount)
-            density_image = density_map(output_save, image, test_image)
+            density_img = density_map(output_save, image, test_image)
             if i == 0:
                 multipleTest[0]['file_name'] = file.filename
                 multipleTest[0]['image'] = data
                 multipleTest[0]['count'] = pdcount
-                multipleTest[0]['density_image'] = density_image
+                multipleTest[0]['density_img'] = density_img
             else:
                 info['file_name'] = file.filename
                 info['image'] = data
                 info['count'] = pdcount
-                info['density_image'] = density_image
+                info['density_img'] = density_img
                 multipleTest.append(info)
 
     return {
