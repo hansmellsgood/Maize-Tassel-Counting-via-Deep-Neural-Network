@@ -11,7 +11,9 @@ function AboutUs() {
           <h2 className="font-weight-light">About Us</h2>
           <hr/>
             <p>
-              We are a group of undergraduate Bachelor of Computer Science students at the University of Wollongong doing our Final Year Project (FYP-21-S4-23).<br />
+              We are a team of undergraduate Bachelor of Computer Science students at the University of Wollongong doing our Final Year Project (FYP-21-S4-23).<br />
+            </p>
+            <p>  
               The group members are:<br />
               Lim Gyu Hyun<br />
               Lim Wei Han<br />

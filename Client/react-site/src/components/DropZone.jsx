@@ -6,7 +6,7 @@ import Button from 'react-bootstrap/Button';
 import './DropZone.css';
 
 const returnContext = React.createContext({
-    returnC: {}, fetchRC: () => {}
+    returnC: {}, fetchRC: () => {}, closeModal: () => {}
 
 })
 
@@ -63,8 +63,10 @@ const RadioButton = ({ label, value, onChange }) => {
   };
 
 function Visualization() {
-    const {returnC, setRC} = React.useContext(returnContext)
+    const {returnC, setRC, closeModal, modalRef, modalImageRef} = React.useContext(returnContext)
 
+    const modalR = useRef();
+    const modalImageR = useRef();
     const changeIMG = () => {
        
         if (returnC.display_img === returnC.image) {
@@ -99,6 +101,12 @@ function Visualization() {
     const densityMap = () => {
 
     };
+
+    /*
+    const imageClick = () => {
+        modalRef.current.style.display = "block";
+        modalImageRef.current.style.backgroundImage = `url(${returnC.display_img})`;
+    }
     */
 
     useEffect(() => {
@@ -111,6 +119,9 @@ function Visualization() {
                     className="img-tt mb-lg-10"
                     src= {returnC.display_img}
                     alt=""
+                    onClick={() => {
+                        modalRef.current.style.display = "block";
+                        modalImageRef.current.style.backgroundImage = `url(${returnC.display_img})`;}}
                 />
             </div>
             <div className='col'>
@@ -126,12 +137,19 @@ function Visualization() {
                         File: {returnC.file_name} <br/>Count: {returnC.count}    
                     </div>
                 </div>
+                {/*
                 <div className='select-model m-2'>
                     <RadioGroup />
                 </div>
+                */}
                 <div className='btn p-0 m-2'>
                     <Button variant="secondary" size="sm" className="visualization-btn" onClick={changeIMG}>Toggle Visualisation</Button>
                 </div>
+            </div>
+            <div className="modal" ref={modalR}>
+                <div className="overlay"></div>
+                <span className="close" onClick={(() => closeModal())}>X</span>
+                <div className="modal-image" ref={modalImageR}></div>
             </div>
         </div>
     )
@@ -315,7 +333,7 @@ const DropZone = () => {
 
     return (
         <>
-        <returnContext.Provider value={{returnC, setRC}}>
+        <returnContext.Provider value={{returnC, setRC, closeModal, modalRef, modalImageRef}}>
             <div className="container-fluid">
                 <div className="vertical-align-top content top p-3">
                     <h2 className="font-weight-light">Single Upload</h2>

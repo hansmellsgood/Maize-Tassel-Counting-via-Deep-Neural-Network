@@ -10,32 +10,6 @@ const returnContext = React.createContext({
 
 })
 
-function Visualization() {
-    const {r, setR} = React.useContext(returnContext)
-
-    useEffect(() => {
-    }, []);
-    
-    return (
-        <>
-        <div className='visualization multi-box row p-0 m-0'>
-            {r.map((r) => (
-                    <div className='col-md-6 col-lg-4'>
-                        <div className='center'>
-                            <img className='img-m mb-lg-10 ' src={r.display_img}/>
-                        
-                            <div className='single-results p-2'>
-                                <div className='resultsDisplay'>
-                                    <p className='text-center'>{r.file_name} <br />Count: {r.count}</p>
-                                </div>
-                            </div>
-                        </div> 
-                    </div>
-            ))}
-        </div></>
-    )
-}
-
 const RadioGroup = () => {
     const [option, setOption] = React.useState('one');
 
@@ -86,7 +60,46 @@ const RadioButton = ({ label, value, onChange }) => {
         {label}
       </label>
     );
-  };
+};
+
+function Visualization() {
+    const {r, setR, closeModal, modalRef, modalImageRef} = React.useContext(returnContext)
+
+    /*
+    const imageClick = (e) => {
+        modalRef.current.style.display = "block";
+        modalImageRef.current.style.backgroundImage = `url(${r.display_img})`;
+    }
+    */
+   
+    useEffect(() => {
+    }, []);
+    
+    return (
+        <>
+        <div className='visualization multi-box row p-0 m-0'>
+            {r.map((r) => (
+                    <div className='col-md-12 col-lg-4'>
+                        <div className='center'>
+                            <img className='img-m mb-lg-10' src={r.display_img} 
+                                onClick={() => {
+                                    modalRef.current.style.display = "block";
+                                    modalImageRef.current.style.backgroundImage = `url(${r.display_img})`;}}
+                            />
+                        
+                            <div className='single-results p-2'>
+                                <div className='resultsDisplay'>
+                                    <p className='text-center'>{r.file_name} <br />Count: {r.count}</p>
+                                </div>
+                            </div>
+                        </div> 
+                    </div>
+            ))}
+        </div></>
+    )
+}
+
+
 
 
 const DropZoneM = () => {
@@ -114,6 +127,7 @@ const DropZoneM = () => {
             }
         }, []);
         setValidFiles([...filteredArr]);
+        setR([...r])
     }, [selectedFiles]);
 
     const preventDefault = (e) => {
@@ -165,7 +179,7 @@ const DropZoneM = () => {
     }
 
     const validateFile = (file) => {
-        const validTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+        const validTypes = ['image/jpeg'];
         if (validTypes.indexOf(file.type) === -1) {
             return false;
         }
@@ -275,7 +289,7 @@ const DropZoneM = () => {
 
     return (
         <>
-        <returnContext.Provider value={{r, setR, display, setDisplay}}>
+        <returnContext.Provider value={{r, setR, closeModal, modalRef, modalImageRef}}>
             <div className="container-fluid">
                 <div className="vertical-align-top content top p-3">
                     <h2 className="font-weight-light">Multiple Upload</h2>
@@ -345,12 +359,12 @@ const DropZoneM = () => {
                     <h2 className="font-weight-light">Visualization</h2>
                     <hr/>
                     <div className='row'>
-                    <div className='col-10'>
+                    <div className='col-lg-10 col-md-8'>
                         <Visualization />
                     </div>
-                    <div className='col-2'>
-                        <RadioGroup />
+                    <div className='col-lg-2 col-md-4'>
                         {/*
+                        <RadioGroup />
                         <div className='btn group'>
                             <Button variant="secondary" size="sm" className="visualization-btn" >Count Maize Tassels</Button>
                             <Button variant="secondary" size="sm" className="visualization-btn" >Density Map</Button>
