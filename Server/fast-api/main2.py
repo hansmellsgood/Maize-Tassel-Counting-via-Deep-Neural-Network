@@ -83,14 +83,9 @@ IMG_STD = [1, 1, 1]
 INPUT_SIZE = 64
 OUTPUT_STRIDE = 8
 
-
-
-
-
 @app.get("/ping")
 async def ping() -> dict:
     return {'data1': tests}
-
 
 @app.post("/ping")
 async def add_tests(test: dict) -> dict:
@@ -192,13 +187,11 @@ async def predict(
         'data': multipleTest
     }
 
-
 def read_image(image):
     img_arr = np.array(Image.open(BytesIO(image)))
     if len(img_arr.shape) == 2:  # grayscale
         img_arr = np.tile(img_arr, [3, 1, 1]).transpose(1, 2, 0)
     return img_arr
-
 
 def resize_image(image):
     h, w = image.shape[:2]
@@ -206,7 +199,6 @@ def resize_image(image):
     nw = int(np.ceil(w * 0.125))
     image = cv2.resize(image, (nw, nh), interpolation=cv2.INTER_CUBIC)
     return image
-
 
 def normalize_image(image):
     # Normalize
@@ -359,7 +351,6 @@ class CountingModels(nn.Module):
         if arc == 'tasselnetv2':
             # changed
             self.normalizer = Normalizer.gpu_normalizer
-
         self.weight_init()
 
     def forward(self, x, is_normalize=True):
