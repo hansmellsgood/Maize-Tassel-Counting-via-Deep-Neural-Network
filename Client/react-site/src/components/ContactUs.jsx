@@ -12,8 +12,8 @@ function ContactUs() {
           <hr/>
           <h5>E-mail</h5>
             <div className="body-text">
-              <h6>Lim Gyu Hyun</h6><p>whlim018@mymail.sim.edu.sg</p>
-              <h6>Lim Wei Han</h6><p>lim069@mymail.sim.edu.sg</p>
+              <h6>Lim Gyu Hyun</h6><p>lim069@mymail.sim.edu.sg</p>
+              <h6>Lim Wei Han</h6><p>whlim018@mymail.sim.edu.sg</p>
               <h6>Guok Mee Han</h6><p>mhguok001@mymail.sim.edu.sg</p>
               <h6>Chu Ki Min Clement</h6><p>kmcchua001@mymail.sim.edu.sg</p>
               <h6>Phua Zhon</h6><p>zphua001@mymail.sim.edu.sg</p>

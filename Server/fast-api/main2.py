@@ -94,11 +94,9 @@ async def add_tests(test: dict) -> dict:
         "data1": {"Tests added."}
     }
 
-
 @app.get("/predict")
 async def get_image() -> dict:
     return {'data1': single}
-
 
 @app.post("/predict")
 async def predict(
