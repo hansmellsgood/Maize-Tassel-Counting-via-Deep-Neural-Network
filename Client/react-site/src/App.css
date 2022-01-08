@@ -120,9 +120,9 @@ code {
 }
 
 .full-scroll-element { 
-    position: relative; 
-    height: inherit; 
-    overflow: auto;
+  position: relative; 
+  height: inherit; 
+  overflow: auto;
 }
 
 .img-tt { 

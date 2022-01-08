@@ -146,11 +146,6 @@ function Visualization() {
                     <Button variant="secondary" size="sm" className="visualization-btn" onClick={changeIMG}>Toggle Visualisation</Button>
                 </div>
             </div>
-            <div className="modal" ref={modalR}>
-                <div className="overlay"></div>
-                <span className="close" onClick={(() => closeModal())}>X</span>
-                <div className="modal-image" ref={modalImageR}></div>
-            </div>
         </div>
     )
 }

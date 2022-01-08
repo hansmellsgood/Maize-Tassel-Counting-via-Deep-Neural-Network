@@ -71,7 +71,7 @@ function Visualization() {
         modalImageRef.current.style.backgroundImage = `url(${r.display_img})`;
     }
     */
-   
+
     useEffect(() => {
     }, []);
     
@@ -230,7 +230,7 @@ const DropZoneM = () => {
 
     const uploadFiles = async () => {
         uploadModalRef.current.style.display = 'block';
-        uploadRef.current.innerHTML = 'File(s) Uploading...';
+        uploadRef.current.innerHTML = 'File Uploading...';
         const formData = new FormData();
         for (let i = 0; i < validFiles.length; i++) {
             formData.append('files', validFiles[i]);
