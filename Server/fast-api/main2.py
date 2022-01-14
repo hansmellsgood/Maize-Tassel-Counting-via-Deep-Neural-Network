@@ -76,6 +76,19 @@ multiple = [
     }
 ]
 
+# Example Dict Structure
+# id
+# image_file (b64 image bytes)
+# file name
+# regression_count
+# density_img 
+# rcnn_img
+# rcnn_count
+# yolov5_img
+# yolov5_count
+# display_img (for front-end)
+# display_count (for front-end)
+
 # Constants
 IMG_SCALE = 1. / 255
 IMG_MEAN = [.3405, .4747, .2418]

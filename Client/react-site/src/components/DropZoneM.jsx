@@ -6,64 +6,48 @@ import Button from 'react-bootstrap/Button';
 import './DropZone.css';
 
 const returnContext = React.createContext({
-    r: [], setR: () => {}
+    r: [], setR: () => {}, selectedModel: [], setSM: () => {}
 
 })
 
-const RadioGroup = () => {
-    const [option, setOption] = React.useState('one');
+const SelectGroup = () => {
+    const {r, setR, returnC, setRC, selectedModel, setSM} = React.useContext(returnContext)
 
-  const handleOneChange = () => {
-    setOption('one');
-  };
+    const handleSelectChange = (e) => {
+        //console.log(e.target.value);
+        var selected = e.target.value;
+        setSM(selected);
+        var here, there;
 
-  const handleTwoChange = () => {
-    setOption('two');
-  };
+        for (let i = 0; i < r.length; i++) {
+            here = r[i].image;
 
-  const handleThreeChange = () => {
-    setOption('three');
-  };
+            console.log(r[i].count);
+            if (selected === "regression") {
+                there = r[i].count;
+            }
+            if (selected === "frcnn") {
+                there = r[i].r_count;
+            }
+            if (selected === "yolov5") {
+                there = r[i].y_count;
+            }
+            r[i].display_img = here;
+            r[i].display_count = there;
+        }
+    }
 
-  return (
-    <div>
-        <h5>Select Model</h5>
-        <div>
-            <RadioButton
-                label=" Option 1"
-                value={option === 'one'}
-                onChange={handleOneChange}
-            />
-        </div>
-        <div>
-            <RadioButton
-                label=" Option 2"
-                value={option === 'two'}
-                onChange={handleTwoChange}
-            />
-        </div>
-        <div>
-            <RadioButton
-                label=" Option 3"
-                value={option === 'three'}
-                onChange={handleThreeChange}
-            />
-        </div>
-    </div>
-  );
-};
-
-const RadioButton = ({ label, value, onChange }) => {
     return (
-      <label>
-        <input type="radio" checked={value} onChange={onChange} />
-        {label}
-      </label>
+        <select className='selectOption' onChange={handleSelectChange.bind(this)}>
+            <option selected="regression" value="regression">Regression Model</option>
+            <option value="frcnn">Faster RCNN</option>
+            <option value="yolov5">YOLOv5</option>
+        </select>
     );
 };
 
 function Visualization() {
-    const {r, setR, closeModal, modalRef, modalImageRef} = React.useContext(returnContext)
+    const {r, setR, closeModal, modalRef, modalImageRef, selectedModel} = React.useContext(returnContext)
 
     /*
     const imageClick = (e) => {
@@ -89,7 +73,7 @@ function Visualization() {
                         
                             <div className='single-results p-2'>
                                 <div className='resultsDisplay'>
-                                    <p className='text-center'>{r.file_name} <br />Count: {r.count}</p>
+                                    <p className='text-center'>{r.file_name} <br />Count: {r.display_count}</p>
                                 </div>
                             </div>
                         </div> 
@@ -116,6 +100,7 @@ const DropZoneM = () => {
     const [r, setR] = useState([]);
     const [display, setDisplay] = useState([]);
     const [rerender, setRerender] = useState(false);
+    const [selectedModel, setSM] = useState('');
 
     useEffect(() => {
         let filteredArr = selectedFiles.reduce((acc, current) => {
@@ -259,9 +244,14 @@ const DropZoneM = () => {
             const rrr = rr.data;
             const r4 = rrr.data;
             for (let i = 0; i < r4.length; i++) {
-                r4[i].image = 'data:image/jpeg;base64,' + r4[i].image
-                r4[i].density_img = 'data:image/jpeg;base64,' + r4[i].density_img
-                r4[i].display_img = r4[i].image
+                r4[i].image = 'data:image/jpeg;base64,' + r4[i].image;
+                r4[i].density_img = 'data:image/jpeg;base64,' + r4[i].density_img;
+                r4[i].display_img = r4[i].image;
+                r4[i].display_count = r4[i].count;
+                r4[i].rcnn_img = ''; //'data:image/jpeg;base64,' + r4[i].rcnn_img;
+                r4[i].r_count = 0;
+                r4[i].yolov5_img = ''; //'data:image/jpeg;base64,' + r4[i].yolov5_img;
+                r4[i].y_count = 0;
             }
             setR(r4)
         })
@@ -276,20 +266,43 @@ const DropZoneM = () => {
     }
 
     const ChangeIMG = () => {
+        var out, here;    
+
         for (let i = 0; i < r.length; i++) {
+            if (r[i].display_img !== r[i].image) {
+                here = r[i].image;
+            }
+            else {
+                if (selectedModel === "regression" || selectedModel === '') {
+                    here = r[i].density_img;
+                    out = "regression model toggle selected";
+                } 
+                else if (selectedModel === "frcnn") { 
+                    here =r[i].rcnn_img;
+                    out = "frcnn model toggle selected";
+                }
+                else if (selectedModel === "yolov5") {
+                    here = r[i].yolov5_img;
+                    out = "yolov5 model toggle selected";
+                }
+            }
+            /*
+            old
             if (r[i].display_img === r[i].image) {
                 r[i].display_img = r[i].density_img;
             }             
             else {
                 r[i].display_img= r[i].image;
-            }
+            }*/
+            //console.log(out);
+            r[i].display_img = here;
         }
         setRerender(!rerender);
     };
 
     return (
         <>
-        <returnContext.Provider value={{r, setR, closeModal, modalRef, modalImageRef}}>
+        <returnContext.Provider value={{r, setR, closeModal, modalRef, modalImageRef, selectedModel, setSM}}>
             <div className="container-fluid">
                 <div className="vertical-align-top content top p-3">
                     <h2 className="font-weight-light">Multiple Upload</h2>
@@ -363,27 +376,13 @@ const DropZoneM = () => {
                         <Visualization />
                     </div>
                     <div className='col-lg-2 col-md-4'>
-                        {/*
-                        <RadioGroup />
-                        <div className='btn group'>
-                            <Button variant="secondary" size="sm" className="visualization-btn" >Count Maize Tassels</Button>
-                            <Button variant="secondary" size="sm" className="visualization-btn" >Density Map</Button>
-                            <Button variant="secondary" size="sm" className="visualization-btn" >Download Image</Button>
-                        </div>
-                        */}
+                        <h5>Select Model</h5>
+                        <SelectGroup />
                         <div className='btn p-0 mt-3'>
                             <Button variant="secondary" size="sm" className="visualization-btn" onClick={ChangeIMG}>Toggle Visualisation</Button>
                         </div>
                     </div>
                     </div>
-                    {/*}
-                    <div className='btn group multiple-btn ml-3 mr-3 mb-3 p-0'>
-                        <Button variant="secondary" size="sm" className="visualization-btnM" >Count Maize Tassels</Button>
-                        <Button variant="secondary" size="sm" className="visualization-btnM" >Density Map</Button>
-                        <Button variant="secondary" size="sm" className="visualization-btnM" >Download Image</Button>
-                    </div>
-                    */}
-                    
                 </div> 
             </div>
         </returnContext.Provider>

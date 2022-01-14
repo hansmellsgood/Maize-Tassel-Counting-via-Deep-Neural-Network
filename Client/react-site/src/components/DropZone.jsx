@@ -6,69 +6,82 @@ import Button from 'react-bootstrap/Button';
 import './DropZone.css';
 
 const returnContext = React.createContext({
-    returnC: {}, fetchRC: () => {}, closeModal: () => {}
+    returnC: {}, fetchRC: () => {}, closeModal: () => {}, selectedModel: {}, setSM: {}
 
 })
 
-const RadioGroup = () => {
-    const [option, setOption] = React.useState('one');
+const SelectGroup = () => {
+    const {returnC, setRC, selectedModel, setSM} = React.useContext(returnContext)
+    const handleSelectChange = (e) => {
+        //console.log(e.target.value);
+        var selected = e.target.value;
+        setSM(selected);
+        var here, there;
 
-  const handleOneChange = () => {
-    setOption('one');
-  };
+        here = returnC.image;
+        if (selected === "regression") {
+            there = returnC.count
+        }
+        else if (selected === "frcnn") {
+            there = returnC.r_count
+        }
+        else if (selected === "yolov5") {
+            there = returnC.y_count
+        }
+        setRC(previousState=> { 
+            return { ...previousState, 'display_img' : here, 'display_count' : there}
+        })
+    }
 
-  const handleTwoChange = () => {
-    setOption('two');
-  };
-
-  const handleThreeChange = () => {
-    setOption('three');
-  };
-
-  return (
-    <div>
-        <h5>Select Model</h5>
-        <div>
-            <RadioButton
-                label=" Option 1"
-                value={option === 'one'}
-                onChange={handleOneChange}
-            />
-        </div>
-        <div>
-            <RadioButton
-                label=" Option 2"
-                value={option === 'two'}
-                onChange={handleTwoChange}
-            />
-        </div>
-        <div>
-            <RadioButton
-                label=" Option 3"
-                value={option === 'three'}
-                onChange={handleThreeChange}
-            />
-        </div>
-    </div>
-  );
+    return (
+        <select className='selectOption' onChange={handleSelectChange.bind(this)}>
+            <option selected="regression" value="regression">Regression Model</option>
+            <option value="frcnn">Faster RCNN</option>
+            <option value="yolov5">YOLOv5</option>
+        </select>
+    );
 };
 
-const RadioButton = ({ label, value, onChange }) => {
-    return (
-      <label>
-        <input type="radio" checked={value} onChange={onChange} />
-        {label}
-      </label>
-    );
-  };
-
 function Visualization() {
-    const {returnC, setRC, closeModal, modalRef, modalImageRef} = React.useContext(returnContext)
-
-    const modalR = useRef();
-    const modalImageR = useRef();
+    const {returnC, setRC, closeModal, modalRef, modalImageRef, selectedModel} = React.useContext(returnContext)
     const changeIMG = () => {
-       
+        var out, here;
+        if (returnC.display_img !== returnC.image) {
+            here = returnC.image;
+        }
+        else {
+            if (selectedModel === "regression" || selectedModel === '') {
+                here = returnC.density_img;
+                out = "regression model toggle selected";
+            } 
+            else if (selectedModel === "frcnn") { 
+                here = returnC.rcnn_img;
+                out = "frcnn model toggle selected";
+            }
+            else if (selectedModel === "yolov5") {
+                here = returnC.yolov5_img;
+                out = "yolov5 model toggle selected";
+            }
+        }
+        setRC(previousState=> {
+            return { ...previousState, 'display_img': here}
+        })
+        //console.log(out);
+
+        /*
+        outdated 
+
+        if (selectedModel === "regression") {
+            out = "regression model toggle selected";
+        } 
+        else if (selectedModel === "frcnn") { 
+            out = "frcnn model toggle selected";
+        }
+        else if (selectedModel === "yolov5") {
+            out = "yolov5 model toggle selected";
+        }
+        console.log(out);
+
         if (returnC.display_img === returnC.image) {
             const here = returnC.density_img
             setRC(previousState=> { 
@@ -81,26 +94,8 @@ function Visualization() {
                 return { ...previousState, 'display_img' : here}
             })
         }
+        */
     }
-
-    /*
-    const updateInfo = () => {
-        setRC(previousState=> {
-            return{ ...previousState, 'file_name': returnC.file_name}
-        })
-    }
-
-    const countBtn = () => {
-        setRC(previousState=> {
-            return{ ...previousState, 'count': returnC.count * 2}
-        
-    })};
-    const downloadBtn = () => {
-        
-    };
-    const densityMap = () => {
-
-    };
 
     /*
     const imageClick = () => {
@@ -125,23 +120,18 @@ function Visualization() {
                 />
             </div>
             <div className='col'>
-                {/*<div className='btn group p-0'>
-                    <Button variant="secondary" size="sm" className="visualization-btn" onClick={countBtn}>Count Maize Tassels</Button>
-                    <Button variant="secondary" size="sm" className="visualization-btn" onClick={densityMap}>Density Map</Button>
-                    <Button variant="secondary" size="sm" className="visualization-btn" onClick={downloadBtn}>Download Image</Button>
+                <div className='select-model m-2'>
+                    <div className='modelSelect'>
+                        <h5>Select Model</h5>
+                        <SelectGroup />
+                    </div>
                 </div>
-                */}
                 <div className='single-results m-2'>
                     <h5>Results</h5>
                     <div className='resultsDisplay'>
-                        File: {returnC.file_name} <br/>Count: {returnC.count}    
+                        File: {returnC.file_name} <br/>Count: {returnC.display_count}    
                     </div>
-                </div>
-                {/*
-                <div className='select-model m-2'>
-                    <RadioGroup />
-                </div>
-                */}
+                </div>            
                 <div className='btn p-0 m-2'>
                     <Button variant="secondary" size="sm" className="visualization-btn" onClick={changeIMG}>Toggle Visualisation</Button>
                 </div>
@@ -161,12 +151,18 @@ const DropZone = () => {
     const [validFiles, setValidFiles] = useState([]);
     const [unsupportedFiles, setUnsupportedFiles] = useState([]);
     const [errorMessage, setErrorMessage] = useState('');
+    const [selectedModel, setSM] = useState('');
     const [returnC, setRC] = useState({
-        'file_name' : '',
-        'count' : 0,
-        'image' : "",
-        'density_img' : "",
-        'display_img' : ""
+        'file_name':'',
+        'image':"",
+        'density_img':"", //regression visual
+        'count':0,
+        'rcnn_img':"", //rcnn visual
+        'r_count':0,
+        'yolov5_img':"", //yolov5 visual
+        'y_count':0,
+        'display_img':"", //display box
+        'display_count':0
     });
 
     useEffect(() => {
@@ -314,7 +310,7 @@ const DropZone = () => {
             const rx = 'data:image/jpeg;base64,' + rrr.image;
             const rxx = 'data:image/jpeg;base64,' + rrr.density_img;
             setRC(previousState => {
-                return { ...previousState, 'file_name' : rrr.file_name, 'count' : rrr.count, 'image' : rx, 'density_img':rxx, 'display_img' : rx}});
+                return { ...previousState, 'file_name' : rrr.file_name, 'count' : rrr.count, 'image' : rx, 'density_img':rxx, 'display_img' : rx, 'display_count' : rrr.count}});
         })
         .catch(() => {
             uploadRef.current.innerHTML = `<span class="error">Error Uploading File(s)</span>`;
@@ -328,7 +324,7 @@ const DropZone = () => {
 
     return (
         <>
-        <returnContext.Provider value={{returnC, setRC, closeModal, modalRef, modalImageRef}}>
+        <returnContext.Provider value={{returnC, setRC, closeModal, modalRef, modalImageRef, selectedModel, setSM}}>
             <div className="container-fluid">
                 <div className="vertical-align-top content top p-3">
                     <h2 className="font-weight-light">Single Upload</h2>
@@ -355,8 +351,9 @@ const DropZone = () => {
                                 />
                             </div>
                             <div className='buttonmessage'>
-                                {unsupportedFiles.length === 0 && validFiles.length ? <Button className="file-upload-btn center" variant="secondary" size="sm" onClick={() => uploadFiles()}>Upload</Button> : ''} 
+                                {unsupportedFiles.length === 0 && validFiles.length === 1 ? <Button className="file-upload-btn center" variant="secondary" size="sm" onClick={() => uploadFiles()}>Upload</Button> : ''} 
                                 {unsupportedFiles.length ? <p>Please remove all unsupported files.</p> : ''}
+                                {validFiles.length > 1 ? <p>Please select only 1 file.</p> : ''}
                             </div>
                         </div>
                         <div className='col'>
@@ -399,7 +396,7 @@ const DropZone = () => {
                     <h2 className="font-weight-light">Visualization</h2>
                     <hr/>
                     <Visualization />
-                </div> 
+                </div>
             </div>
         </returnContext.Provider>
         </>
