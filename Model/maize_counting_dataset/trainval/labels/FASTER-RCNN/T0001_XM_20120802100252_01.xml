@@ -1,0 +1,25 @@
+<annotation>
+	<folder>my-project-name</folder>
+	<filename>T0001_XM_20120802100252_01.jpg</filename>
+	<path>/my-project-name/T0001_XM_20120802100252_01.jpg</path>
+	<source>
+		<database>Unspecified</database>
+	</source>
+	<size>
+		<width>3648</width>
+		<height>2736</height>
+		<depth>3</depth>
+	</size>
+	<object>
+		<name>Maize</name>
+		<pose>Unspecified</pose>
+		<truncated>Unspecified</truncated>
+		<difficult>Unspecified</difficult>
+		<bndbox>
+			<xmin>527</xmin>
+			<ymin>1617</ymin>
+			<xmax>627</xmax>
+			<ymax>1704</ymax>
+		</bndbox>
+	</object>
+</annotation>
