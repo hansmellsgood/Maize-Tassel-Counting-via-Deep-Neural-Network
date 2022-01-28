@@ -39,43 +39,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-tests = [
-    {
-        "id": "1",
-        "citem": "Read a book."
-    },
-    {
-        "id": "2",
-        "citem": "Cycle around town."
-    }
-]
-
-single = [
-    {
-        "id": 1,
-        "file": "test.jpeg",
-        "file_name": "test.jpeg",
-        "count": 1,
-        # "density_img":"test.jpeg"
-    }]
-
-multiple = [
-    {
-        "id": "1",
-        "file": "1",
-        "file_name": "test.jpeg",
-        "count": "3",
-        # "density_img":"test.jpeg"
-    },
-    {
-        "id": "2",
-        "file": "1",
-        "file_name": "test.jpeg",
-        "count": "3",
-        # "density_img": "test.jpeg"
-    }
-]
-
 # Example Dict Structure
 # id
 # image_file (b64 image bytes)
