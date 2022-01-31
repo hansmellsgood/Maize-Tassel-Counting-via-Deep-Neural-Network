@@ -1,8 +1,10 @@
 # FastAPI Modules
-from fastapi import FastAPI, File, UploadFile, Form
+from re import S
+from fastapi import FastAPI, File, UploadFile, Form, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 import uvicorn
+from pydantic import BaseModel
 from typing import List
 
 # Stats Modules
@@ -24,6 +26,15 @@ import torch.nn.functional as F
 import torch.nn as nn
 import torch.optim as optim
 from torchvision import datasets, transforms
+
+class Item(BaseModel):
+    uri: str
+    type: str 
+    fileName: str
+    height: int 
+    width: int
+    fileSize: int 
+    base64: str
 
 app = FastAPI()
 
@@ -68,6 +79,41 @@ async def add_tests(test: dict) -> dict:
     tests.append(test)
     return {
         "data1": {"Tests added."}
+    }
+
+@app.post("pp")
+async def pp(
+    input: Item
+):
+    imageString = input.base64
+    imageB64 = base64.b64decode(imageString)
+
+    test_image = read_image(imageB64)
+    image = read_image(imageB64)
+    image = resize_image(image)
+    image = normalize_image(image)
+    image = tensor_image(image)
+    image = zero_padding_image(image)
+
+    model = torch.load('whole_model.pt')
+    model.eval()
+    with torch.no_grad():
+        output = model(image, is_normalize=False)
+        output_save = output
+        output = Normalizer.gpu_normalizer(output, image.size()[2], image.size()[3], INPUT_SIZE, OUTPUT_STRIDE)
+        # postprocessing
+        output = np.clip(output, 0, None)
+        pdcount = output.sum()
+        pdcount = math.floor(pdcount)
+        density_img = density_map(output_save, image, test_image)
+
+    
+    return {
+        'file_name':input.fileName,
+        'count':pdcount,
+        'height':input.height,
+        'width':input.width,
+        'density_img':density_img,
     }
 
 @app.get("/predict")
