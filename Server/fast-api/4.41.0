@@ -1,0 +1,5 @@
+Collecting tqdm
+  Downloading tqdm-4.62.3-py2.py3-none-any.whl (76 kB)
+Requirement already satisfied: colorama in d:\anaconda3\envs\condaenv\lib\site-packages (from tqdm) (0.4.4)
+Installing collected packages: tqdm
+Successfully installed tqdm-4.62.3

@@ -309,8 +309,13 @@ const DropZone = () => {
             const rrr = rr.data;
             const rx = 'data:image/jpeg;base64,' + rrr.image;
             const rxx = 'data:image/jpeg;base64,' + rrr.density_img;
+            const rxxx = 'data:image/jpeg;base64,' + rrr.yolov5_img;
             setRC(previousState => {
-                return { ...previousState, 'file_name' : rrr.file_name, 'count' : rrr.count, 'image' : rx, 'density_img':rxx, 'display_img' : rx, 'display_count' : rrr.count}});
+                return {
+                    ...previousState, 'file_name': rrr.file_name, 'count': rrr.count, 'image': rx, 'density_img': rxx, 'display_img': rx,
+                    'display_count': rrr.count, 'yolov5_img': rxxx, 'y_count': rrr.yolov5_count,
+                }
+            });
         })
         .catch(() => {
             uploadRef.current.innerHTML = `<span class="error">Error Uploading File(s)</span>`;

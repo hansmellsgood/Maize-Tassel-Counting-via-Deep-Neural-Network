@@ -10,6 +10,7 @@ from typing import List
 # Stats Modules
 import numpy as np
 import math
+import copy
 
 # Images Modules
 import io
@@ -19,6 +20,7 @@ import cv2
 import base64
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
+#import requests
 
 # Torch Modules
 import torch
@@ -70,17 +72,6 @@ IMG_STD = [1, 1, 1]
 INPUT_SIZE = 64
 OUTPUT_STRIDE = 8
 
-@app.get("/ping")
-async def ping() -> dict:
-    return {'data1': tests}
-
-@app.post("/ping")
-async def add_tests(test: dict) -> dict:
-    tests.append(test)
-    return {
-        "data1": {"Tests added."}
-    }
-
 @app.post("pp")
 async def pp(
     input: Item
@@ -116,9 +107,6 @@ async def pp(
         'density_img':density_img,
     }
 
-@app.get("/predict")
-async def get_image() -> dict:
-    return {'data1': single}
 
 @app.post("/predict")
 async def predict(
@@ -126,9 +114,9 @@ async def predict(
 ):
     image = await file.read()
     data = base64.b64encode(image)
-
     # preprocessing
     test_image = read_image(image)
+    image1 = read_image(image)
     image = read_image(image)
     image = resize_image(image)
     image = normalize_image(image)
@@ -148,12 +136,27 @@ async def predict(
         pdcount = math.floor(pdcount)
         density_img = density_map(output_save, image, test_image)
 
+    #Yolo Implementation
+    yolo_model = torch.hub.load('ultralytics/yolov5', 'custom', path='best.pt')
+    yolo_model.conf = 0.3
+    #yolo_model.iou = 0.4
+    yolo_output = yolo_model(image1)
+    #print(f'prediction: {yolo_output.pred}')
+    n = yolo_output.pred[0].numpy()
+    yolov5_count = len(n)
+    yolo_output = yolo_output.render()
+    buffered = BytesIO()
+    img_base64 = Image.fromarray(yolo_output[0])
+    img_base64.save(buffered, format="JPEG")
+    yolov5_img = base64.b64encode(buffered.getvalue()).decode('utf-8')
     
     return {
         'file_name': file.filename,
         'image': data,
         'density_img': density_img,
-        'count': pdcount
+        'count': pdcount,
+        'yolov5_count': yolov5_count,
+        'yolov5_img': yolov5_img
     }
 
 
@@ -165,7 +168,9 @@ async def predict(
         "file_name": None,
         "image": None,
         "count": 0,
-        "density_img":None
+        "density_img":None,
+        'yolov5_count': 0,
+        'yolov5_img': None
     }]
     for i, file in enumerate(files):
         info = {}
@@ -173,6 +178,7 @@ async def predict(
         data = base64.b64encode(image)
         # preprocessing
         test_image = read_image(image)
+        image1 = read_image(image)
         image = read_image(image)
         image = resize_image(image)
         image = normalize_image(image)
@@ -191,17 +197,34 @@ async def predict(
             pdcount = output.sum()
             pdcount = math.floor(pdcount)
             density_img = density_map(output_save, image, test_image)
-            if i == 0:
-                multipleTest[0]['file_name'] = file.filename
-                multipleTest[0]['image'] = data
-                multipleTest[0]['count'] = pdcount
-                multipleTest[0]['density_img'] = density_img
-            else:
-                info['file_name'] = file.filename
-                info['image'] = data
-                info['count'] = pdcount
-                info['density_img'] = density_img
-                multipleTest.append(info)
+        # Yolo Implementation
+        yolo_model = torch.hub.load('ultralytics/yolov5', 'custom', path='best.pt')
+        yolo_model.conf = 0.3
+        # yolo_model.iou = 0.4
+        yolo_output = yolo_model(image1)
+        # print(f'prediction: {yolo_output.pred}')
+        n = yolo_output.pred[0].numpy()
+        yolov5_count = len(n)
+        yolo_output = yolo_output.render()
+        buffered = BytesIO()
+        img_base64 = Image.fromarray(yolo_output[0])
+        img_base64.save(buffered, format="JPEG")
+        yolov5_img = base64.b64encode(buffered.getvalue()).decode('utf-8')
+        if i == 0:
+            multipleTest[0]['file_name'] = file.filename
+            multipleTest[0]['image'] = data
+            multipleTest[0]['count'] = pdcount
+            multipleTest[0]['density_img'] = density_img
+            multipleTest[0]['yolov5_count'] = yolov5_count
+            multipleTest[0]['yolov5_img'] = yolov5_img
+        else:
+            info['file_name'] = file.filename
+            info['image'] = data
+            info['count'] = pdcount
+            info['density_img'] = density_img
+            info['yolov5_count'] = yolov5_count
+            info['yolov5_img'] = yolov5_img
+            multipleTest.append(info)
 
     return {
         'data': multipleTest

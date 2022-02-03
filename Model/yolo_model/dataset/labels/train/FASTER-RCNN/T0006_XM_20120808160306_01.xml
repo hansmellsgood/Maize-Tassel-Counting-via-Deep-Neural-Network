@@ -1,0 +1,37 @@
+<annotation>
+	<folder>my-project-name</folder>
+	<filename>T0006_XM_20120808160306_01.jpg</filename>
+	<path>/my-project-name/T0006_XM_20120808160306_01.jpg</path>
+	<source>
+		<database>Unspecified</database>
+	</source>
+	<size>
+		<width>3648</width>
+		<height>2736</height>
+		<depth>3</depth>
+	</size>
+	<object>
+		<name>Maize</name>
+		<pose>Unspecified</pose>
+		<truncated>Unspecified</truncated>
+		<difficult>Unspecified</difficult>
+		<bndbox>
+			<xmin>1237</xmin>
+			<ymin>1664</ymin>
+			<xmax>1446</xmax>
+			<ymax>1969</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>Maize</name>
+		<pose>Unspecified</pose>
+		<truncated>Unspecified</truncated>
+		<difficult>Unspecified</difficult>
+		<bndbox>
+			<xmin>1343</xmin>
+			<ymin>861</ymin>
+			<xmax>1393</xmax>
+			<ymax>1071</ymax>
+		</bndbox>
+	</object>
+</annotation>
