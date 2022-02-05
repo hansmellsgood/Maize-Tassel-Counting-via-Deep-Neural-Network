@@ -1,0 +1,42 @@
+image_scale :	 0.00392156862745098
+image_mean :	 [0.3405, 0.4747, 0.2418]
+image_std :	 [1, 1, 1]
+data_dir :	 maize_counting_dataset
+dataset :	 mtc
+exp :	 exp_directory
+data_list :	 maize_counting_dataset/train.txt
+data_val_list :	 maize_counting_dataset/test.txt
+restore_from :	 model_best.pth.tar
+snapshot_dir :	 ./snapshots
+result_dir :	 ./results
+save_output :	 store_true
+input_size :	 64
+output_stride :	 8
+resize_ratio :	 0.125
+model :	 tasselnetv2
+optimizer :	 sgd
+batch_size :	 9
+milestones :	 [200, 400]
+crop_size :	 (256, 256)
+evaluate_only :	 store_true
+learning_rate :	 0.01
+momentum :	 0.95
+weight_decay :	 0.0005
+mult :	 1
+num_epochs :	 10
+num_workers :	 0
+print_every :	 1
+random_seed :	 6
+val_every :	 1
+epoch: 1, mae: 36.73, mse: 44.79, rmae: 90.77%, rmse: 103.22%, r2: 0.0133
+epoch: 2, mae: 67.27, mse: 84.86, rmae: 616.42%, rmse: 2080.82%, r2: 0.0121
+epoch: 3, mae: 21.12, mse: 24.72, rmae: 102.83%, rmse: 319.06%, r2: 0.5024
+epoch: 4, mae: 10.92, mse: 14.99, rmae: 42.43%, rmse: 95.61%, r2: 0.7847
+epoch: 5, mae: 21.52, mse: 26.86, rmae: 55.57%, rmse: 63.08%, r2: 0.7630
+epoch: 6, mae: 17.74, mse: 22.46, rmae: 94.82%, rmse: 249.53%, r2: 0.6788
+epoch: 7, mae: 11.89, mse: 17.81, rmae: 54.12%, rmse: 126.69%, r2: 0.6184
+epoch: 8, mae: 8.31, mse: 11.71, rmae: 43.30%, rmse: 113.67%, r2: 0.8268
+epoch: 9, mae: 14.88, mse: 16.99, rmae: 94.95%, rmse: 226.87%, r2: 0.8296
+epoch: 10, mae: 11.29, mse: 15.04, rmae: 35.40%, rmse: 65.91%, r2: 0.8238
+best mae: 8.31, best mse: 11.71, best_rmae: 43.30, best_rmse: 113.67, best_r2: 0.8268
+overall best mae: 8.31, overall best mse: 11.71, overall best_rmae: 35.40, overall best_rmse: 63.08, overall best_r2: 0.8296

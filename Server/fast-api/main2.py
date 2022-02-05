@@ -72,7 +72,7 @@ IMG_STD = [1, 1, 1]
 INPUT_SIZE = 64
 OUTPUT_STRIDE = 8
 
-@app.post("pp")
+@app.post("/pp")
 async def pp(
     input: Item
 ):
