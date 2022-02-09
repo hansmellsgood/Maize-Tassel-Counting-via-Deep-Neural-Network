@@ -248,8 +248,8 @@ const DropZoneM = () => {
                 r4[i].density_img = 'data:image/jpeg;base64,' + r4[i].density_img;
                 r4[i].display_img = r4[i].image;
                 r4[i].display_count = r4[i].count;
-                r4[i].rcnn_img = ''; //'data:image/jpeg;base64,' + r4[i].rcnn_img;
-                r4[i].r_count = 0;
+                r4[i].rcnn_img = 'data:image/jpeg;base64,' + r4[i].rcnn_img;
+                r4[i].r_count = r4[i].rcnn_count;
                 r4[i].yolov5_img = 'data:image/jpeg;base64,' + r4[i].yolov5_img;
                 r4[i].y_count = r4[i].yolov5_count;
             }

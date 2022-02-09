@@ -27,6 +27,7 @@ import torch
 import torch.nn.functional as F
 import torch.nn as nn
 import torch.optim as optim
+import torchvision
 from torchvision import datasets, transforms
 
 class Item(BaseModel):
@@ -80,12 +81,16 @@ async def pp(
     imageB64 = base64.b64decode(imageString)
 
     test_image = read_image(imageB64)
+    image1 = read_image(imageB64)
+    image2 = read_image(imageB64)
+    test_image2 = read_image(imageB64)
     image = read_image(imageB64)
     image = resize_image(image)
     image = normalize_image(image)
     image = tensor_image(image)
     image = zero_padding_image(image)
 
+    #Regression Implementation
     model = torch.load('whole_model.pt')
     model.eval()
     with torch.no_grad():
@@ -98,13 +103,61 @@ async def pp(
         pdcount = math.floor(pdcount)
         density_img = density_map(output_save, image, test_image)
 
-    
+    # Yolo Implementation
+    yolo_model = torch.hub.load('ultralytics/yolov5', 'custom', path='best.pt')
+    yolo_model.conf = 0.3
+    # yolo_model.iou = 0.4
+    yolo_output = yolo_model(image1)
+    # print(f'prediction: {yolo_output.pred}')
+    n = yolo_output.pred[0].numpy()
+    yolov5_count = len(n)
+    yolo_output = yolo_output.render()
+    buffered = BytesIO()
+    img_base64 = Image.fromarray(yolo_output[0])
+    img_base64.save(buffered, format="JPEG")
+    yolov5_img = base64.b64encode(buffered.getvalue()).decode('utf-8')
+
+    # Faster-RCNN Implementation
+    image2 = cv2.cvtColor(image2, cv2.COLOR_BGR2RGB).astype(np.float32)
+    image2 /= 255.
+    image2 = image2.transpose((2, 0, 1))
+    image2 = torch.from_numpy(image2)
+    image2 = image2.unsqueeze(0)
+    faster_rcnn_model = torch.load('faster_rcnn2.pt')
+    faster_rcnn_output = faster_rcnn_model(image2)
+    # non-max supression to reduce overlapping bboxes
+    nms_out = (torchvision.ops.nms(boxes=faster_rcnn_output[0]['boxes'],
+                                   scores=faster_rcnn_output[0]['scores'], iou_threshold=0.1)).cpu().numpy()
+    threshold = 0.3
+    boxes = []
+    scores = []
+    for n in nms_out:
+        if faster_rcnn_output[0]['scores'][n].cpu().detach().numpy() <= threshold:
+            continue
+        boxes.append(faster_rcnn_output[0]['boxes'][n].cpu().detach().numpy().astype(np.int32))
+        scores.append(faster_rcnn_output[0]['scores'][n].cpu().detach().numpy())
+    for box in boxes:
+        cv2.rectangle(test_image2, (box[0], box[1]), (box[2], box[3]), (0, 0, 255), 10)
+    fig, ax = plt.subplots(figsize=(15, 5))
+    ax.imshow(test_image2.astype(np.uint8))
+    ax.get_xaxis().set_visible(False)
+    ax.get_yaxis().set_visible(False)
+    my_stringIObytes = io.BytesIO()
+    plt.savefig(my_stringIObytes, format='jpg', bbox_inches="tight", pad_inches=0, dpi=300)
+    my_stringIObytes.seek(0)
+    rcnn_img = base64.b64encode(my_stringIObytes.read())
+    rcnn_count = len(boxes)
+
     return {
         'file_name':input.fileName,
         'count':pdcount,
         'height':input.height,
         'width':input.width,
         'density_img':density_img,
+        'yolov5_count': yolov5_count,
+        'yolov5_img': yolov5_img,
+        'rcnn_img': rcnn_img,
+        'rcnn_count': rcnn_count
     }
 
 
@@ -117,6 +170,8 @@ async def predict(
     # preprocessing
     test_image = read_image(image)
     image1 = read_image(image)
+    image2 = read_image(image)
+    test_image2 = read_image(image)
     image = read_image(image)
     image = resize_image(image)
     image = normalize_image(image)
@@ -149,14 +204,47 @@ async def predict(
     img_base64 = Image.fromarray(yolo_output[0])
     img_base64.save(buffered, format="JPEG")
     yolov5_img = base64.b64encode(buffered.getvalue()).decode('utf-8')
-    
+
+    #Faster-RCNN Implementation
+    image2 = cv2.cvtColor(image2, cv2.COLOR_BGR2RGB).astype(np.float32)
+    image2 /= 255.
+    image2 = image2.transpose((2, 0, 1))
+    image2 = torch.from_numpy(image2)
+    image2 = image2.unsqueeze(0)
+    faster_rcnn_model = torch.load('faster_rcnn2.pt')
+    faster_rcnn_output = faster_rcnn_model(image2)
+    #non-max supression to reduce overlapping bboxes
+    nms_out = (torchvision.ops.nms(boxes=faster_rcnn_output[0]['boxes'],
+                                   scores=faster_rcnn_output[0]['scores'], iou_threshold=0.1)).cpu().numpy()
+    threshold = 0.3
+    boxes = []
+    scores = []
+    for n in nms_out:
+        if faster_rcnn_output[0]['scores'][n].cpu().detach().numpy() <= threshold:
+            continue
+        boxes.append(faster_rcnn_output[0]['boxes'][n].cpu().detach().numpy().astype(np.int32))
+        scores.append(faster_rcnn_output[0]['scores'][n].cpu().detach().numpy())
+    for box in boxes:
+        cv2.rectangle(test_image2, (box[0], box[1]), (box[2], box[3]), (0, 0, 255), 10)
+    fig, ax = plt.subplots(figsize=(15, 15))
+    ax.imshow(test_image2.astype(np.uint8))
+    ax.get_xaxis().set_visible(False)
+    ax.get_yaxis().set_visible(False)
+    my_stringIObytes = io.BytesIO()
+    plt.savefig(my_stringIObytes, format='jpg', bbox_inches="tight", pad_inches=0, dpi=300)
+    my_stringIObytes.seek(0)
+    rcnn_img = base64.b64encode(my_stringIObytes.read())
+    rcnn_count = len(boxes)
+
     return {
         'file_name': file.filename,
         'image': data,
         'density_img': density_img,
         'count': pdcount,
         'yolov5_count': yolov5_count,
-        'yolov5_img': yolov5_img
+        'yolov5_img': yolov5_img,
+        'rcnn_img': rcnn_img,
+        'rcnn_count': rcnn_count
     }
 
 
@@ -170,7 +258,9 @@ async def predict(
         "count": 0,
         "density_img":None,
         'yolov5_count': 0,
-        'yolov5_img': None
+        'yolov5_img': None,
+        'rcnn_count': 0,
+        'rcnn_img': None
     }]
     for i, file in enumerate(files):
         info = {}
@@ -179,6 +269,8 @@ async def predict(
         # preprocessing
         test_image = read_image(image)
         image1 = read_image(image)
+        image2 = read_image(image)
+        test_image2 = read_image(image)
         image = read_image(image)
         image = resize_image(image)
         image = normalize_image(image)
@@ -197,6 +289,7 @@ async def predict(
             pdcount = output.sum()
             pdcount = math.floor(pdcount)
             density_img = density_map(output_save, image, test_image)
+
         # Yolo Implementation
         yolo_model = torch.hub.load('ultralytics/yolov5', 'custom', path='best.pt')
         yolo_model.conf = 0.3
@@ -210,6 +303,38 @@ async def predict(
         img_base64 = Image.fromarray(yolo_output[0])
         img_base64.save(buffered, format="JPEG")
         yolov5_img = base64.b64encode(buffered.getvalue()).decode('utf-8')
+
+        # Faster-RCNN Implementation
+        image2 = cv2.cvtColor(image2, cv2.COLOR_BGR2RGB).astype(np.float32)
+        image2 /= 255.
+        image2 = image2.transpose((2, 0, 1))
+        image2 = torch.from_numpy(image2)
+        image2 = image2.unsqueeze(0)
+        faster_rcnn_model = torch.load('faster_rcnn2.pt')
+        faster_rcnn_output = faster_rcnn_model(image2)
+        # non-max supression to reduce overlapping bboxes
+        nms_out = (torchvision.ops.nms(boxes=faster_rcnn_output[0]['boxes'],
+                                       scores=faster_rcnn_output[0]['scores'], iou_threshold=0.1)).cpu().numpy()
+        threshold = 0.3
+        boxes = []
+        scores = []
+        for n in nms_out:
+            if faster_rcnn_output[0]['scores'][n].cpu().detach().numpy() <= threshold:
+                continue
+            boxes.append(faster_rcnn_output[0]['boxes'][n].cpu().detach().numpy().astype(np.int32))
+            scores.append(faster_rcnn_output[0]['scores'][n].cpu().detach().numpy())
+        for box in boxes:
+            cv2.rectangle(test_image2, (box[0], box[1]), (box[2], box[3]), (0, 0, 255), 10)
+        fig, ax = plt.subplots(figsize=(15, 15))
+        ax.imshow(test_image2.astype(np.uint8))
+        ax.get_xaxis().set_visible(False)
+        ax.get_yaxis().set_visible(False)
+        my_stringIObytes = io.BytesIO()
+        plt.savefig(my_stringIObytes, format='jpg', bbox_inches="tight", pad_inches=0, dpi=300)
+        my_stringIObytes.seek(0)
+        rcnn_img = base64.b64encode(my_stringIObytes.read())
+        rcnn_count = len(boxes)
+
         if i == 0:
             multipleTest[0]['file_name'] = file.filename
             multipleTest[0]['image'] = data
@@ -217,6 +342,8 @@ async def predict(
             multipleTest[0]['density_img'] = density_img
             multipleTest[0]['yolov5_count'] = yolov5_count
             multipleTest[0]['yolov5_img'] = yolov5_img
+            multipleTest[0]['rcnn_count'] = rcnn_count
+            multipleTest[0]['rcnn_img'] = rcnn_img
         else:
             info['file_name'] = file.filename
             info['image'] = data
@@ -224,6 +351,8 @@ async def predict(
             info['density_img'] = density_img
             info['yolov5_count'] = yolov5_count
             info['yolov5_img'] = yolov5_img
+            info['rcnn_count'] = rcnn_count
+            info['rcnn_img'] = rcnn_img
             multipleTest.append(info)
 
     return {

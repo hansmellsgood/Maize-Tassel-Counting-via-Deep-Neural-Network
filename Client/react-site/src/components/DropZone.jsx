@@ -310,10 +310,11 @@ const DropZone = () => {
             const rx = 'data:image/jpeg;base64,' + rrr.image;
             const rxx = 'data:image/jpeg;base64,' + rrr.density_img;
             const rxxx = 'data:image/jpeg;base64,' + rrr.yolov5_img;
+            const rxxxx = 'data:image/jpeg;base64,' + rrr.rcnn_img;
             setRC(previousState => {
                 return {
                     ...previousState, 'file_name': rrr.file_name, 'count': rrr.count, 'image': rx, 'density_img': rxx, 'display_img': rx,
-                    'display_count': rrr.count, 'yolov5_img': rxxx, 'y_count': rrr.yolov5_count,
+                    'display_count': rrr.count, 'yolov5_img': rxxx, 'y_count': rrr.yolov5_count, 'rcnn_img': rxxxx, 'r_count': rrr.rcnn_count
                 }
             });
         })

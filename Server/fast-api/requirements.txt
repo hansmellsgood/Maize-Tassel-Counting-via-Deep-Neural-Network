@@ -11,3 +11,4 @@ opencv-python
 requests>=2.23.0
 tqdm>=4.41.0
 seaborn>=0.11.0
+pytest

@@ -4,3 +4,5 @@ Model/faster_rcnn.pt
 Model/faster_rcnn.pt
 Model/faster_rcnn.pt
 Model/faster_rcnn.pth
+Model/faster_rcnn2.pt
+Server/fast-api/faster_rcnn2.pt
