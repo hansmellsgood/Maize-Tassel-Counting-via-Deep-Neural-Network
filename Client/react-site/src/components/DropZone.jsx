@@ -285,7 +285,7 @@ const DropZone = () => {
             /*formData.append('key', '');*/
             /*https://api.imgbb.com/1/upload8 */
         }
-        await axios.post('http://localhost:8000/predict', formData, {
+        await axios.post('http://18.117.95.68/predict', formData, {
             /*
             headers: {
                 'Content-Type': "multipart/form-data"

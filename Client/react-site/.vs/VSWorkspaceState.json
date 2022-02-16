@@ -1,9 +1,8 @@
 {
   "ExpandedNodes": [
     "",
-    "\\src",
-    "\\src\\components"
+    "\\src"
   ],
-  "SelectedNode": "\\src\\components\\DropZone.jsx",
+  "SelectedNode": "\\src\\App.js",
   "PreviewInSolutionExplorer": false
 }
