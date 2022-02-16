@@ -3,6 +3,13 @@
   <component name="CsvFileAttributes">
     <option name="attributeMap">
       <map>
+        <entry key="/Model/test.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="/fyp/lib/python3.8/site-packages/numpy/core/tests/data/umath-validation-set-cos.csv">
           <value>
             <Attribute>

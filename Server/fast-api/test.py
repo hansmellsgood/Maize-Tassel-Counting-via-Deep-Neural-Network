@@ -16,11 +16,9 @@ from fastapi.testclient import TestClient
 
 app = FastAPI()
 
-
 @app.get("/")
 async def read_main():
     return {"msg": "Hello World"}
-
 
 client = TestClient(app)
 #https://fastapi.tiangolo.com/tutorial/testing/
@@ -33,6 +31,15 @@ class MyTestCase(unittest.TestCase):
             sample_image)
         self.assertEqual(response.status_code,200)
         self.assertEqual(response.json(), {"msg": "Hello World"})
+        self.assertTrue(response.json(), {"msg": "Hello World"})
+        self.assertFalse()
+        self.assertIsNone()
+        self.assertIs()
+        self.assertIsNot()
+        self.assertIn()
+        self.assertNotIn()
+        self.assertIsInstance()
+        self.assertNotIsInstance()
 
     # Utility Function testing
     def test_read_image(self):
@@ -72,7 +79,6 @@ class MyTestCase(unittest.TestCase):
         sample_image = "test.jpg"
         yolo_model = torch.hub.load('ultralytics/yolov5', 'custom', path='best.pt')
         yolo_output = yolo_model(sample_image)
-
 
         self.assertEqual(True, 1)
 

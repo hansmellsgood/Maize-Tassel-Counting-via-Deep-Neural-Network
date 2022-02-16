@@ -1,25 +1,20 @@
 import pytest
-#from main2 import *
+from main2 import *
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 import numpy as np
 app = FastAPI()
 
-
 @app.get("/")
 async def read_main():
     return {"msg": "Hello World"}
 
-
 client = TestClient(app)
-
 
 def test_read_main():
     response = client.get("/")
     assert response.status_code == 200
     assert response.json() == {"msg": "Hello World"}
-
-
 
 # def test_connection():
 #     client = app.test_client()
