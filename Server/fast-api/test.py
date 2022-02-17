@@ -21,6 +21,7 @@ client = TestClient(app)
 sample_image = "test.jpg"
 sample_image1 = "test1.jpg"
 
+
 class MyTestCase(unittest.TestCase):
     # Utility Function testing
     def test_read_image(self):
@@ -29,6 +30,7 @@ class MyTestCase(unittest.TestCase):
         img = read_image(byte_im)
         self.assertEqual(str(type(img)), "<class 'numpy.ndarray'>")
         self.assertEqual(len(img.shape), 3)
+
 
     def test_resize_image(self):
         with open(sample_image, 'rb') as f:
@@ -40,6 +42,7 @@ class MyTestCase(unittest.TestCase):
         self.assertTrue(img.shape[0] > img1.shape[0])
         self.assertTrue(img.shape[1] > img1.shape[1])
 
+
     def test_normalize_image(self):
         with open(sample_image, 'rb') as f:
             byte_im = f.read()
@@ -49,6 +52,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(str(type(img)), "<class 'numpy.ndarray'>")
         self.assertEqual(len(img.shape), 3)
         self.assertEqual(str(type(img1[0][0][0])), "<class 'numpy.float32'>")
+
 
     def test_tensor_image(self):
         with open(sample_image, 'rb') as f:
@@ -70,6 +74,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(str(type(img1)), "<class 'torch.Tensor'>")
         self.assertEqual(len(img1.size()), 4)
 
+
     def test_density_map(self):
         with open('test.jpg', 'rb') as f:
             byte_im = f.read()
@@ -88,16 +93,19 @@ class MyTestCase(unittest.TestCase):
             density_img = density_map(output, img, img1)
         self.assertEqual(str(type(density_img)), "<class 'bytes'>")
 
+
     # Connection Testing
     def test_server_connection_pass(self):
         response = client.get("/api/")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), {"result": "Welcome to Maize Tassel Counting Default"})
 
-    def test_client_connection_fail(self):
+
+    def test_server_connection_fail(self):
         response = client.get("/api/")
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json(), {"result": "Welcome to Maize Tassel Counting Default"})
+
 
     # Main Functions Testing
     def test_predict(self):
@@ -125,10 +133,8 @@ class MyTestCase(unittest.TestCase):
         response = client.post(
             "/api/testArray",
             files=files
-
         )
         self.assertEqual(response.status_code, 200)
-
         self.assertEqual(response.json()['data'][0]["file_name"], "test.jpg")
         self.assertEqual(response.json()['data'][1]["file_name"], "test1.jpg")
         self.assertEqual(str(type(response.json()['data'][0]["image"])), "<class 'str'>")
@@ -150,16 +156,18 @@ class MyTestCase(unittest.TestCase):
         with open(sample_image, 'rb') as f:
             pp_uri = "test.jpg"
             pp_base64 = f.read()
-            pp_filename = "test.jpg"
             img = read_image(pp_base64)
+            encoded_b64 = base64.b64encode(pp_base64)
+            pp_filename = "test.jpg"
             pp_width = img.shape[0]
             pp_height = img.shape[1]
             pp_filesize = os.path.getsize('test.jpg')
             pp_type = sample_image[-4]
+            item = Item(uri=pp_uri,type=pp_type,fileName=pp_filename,height=pp_height,
+                 width=pp_width,fileSize=pp_filesize,base64=encoded_b64)
             response = client.post(
                 "/api/pp",
-                files={"input": Item(uri=pp_uri,type=pp_type,fileName=pp_filename,height=pp_height,
-                                     width=pp_width,fileSize=pp_filesize,base64=pp_base64)}
+                data=item.json()
             )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()["file_name"], sample_image)
@@ -197,6 +205,7 @@ class MyTestCase(unittest.TestCase):
             pd_count = output.sum()
             pd_count = math.floor(pd_count)
             density_img = density_map(output_save, img, img1)
+        self.assertEqual(str(type(model)), "<class 'torch.nn.parallel.data_parallel.DataParallel'>")
         self.assertEqual(str(type(density_img)), "<class 'bytes'>")
         self.assertEqual(str(type(pd_count )), "<class 'int'>")
 
@@ -249,7 +258,6 @@ class MyTestCase(unittest.TestCase):
         pd_count = len(boxes)
         self.assertEqual(str(type(rcnn_img)), "<class 'bytes'>")
         self.assertEqual(str(type(pd_count)), "<class 'int'>")
-
 
 if __name__ == '__main__':
     unittest.main()
