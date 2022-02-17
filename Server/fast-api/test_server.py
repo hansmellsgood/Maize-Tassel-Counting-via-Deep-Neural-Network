@@ -1,13 +1,6 @@
 import pytest
 from main2 import *
-from fastapi import FastAPI
 from fastapi.testclient import TestClient
-import numpy as np
-app = FastAPI()
-
-@app.get("/")
-async def read_main():
-    return {"msg": "Hello World"}
 
 client = TestClient(app)
 

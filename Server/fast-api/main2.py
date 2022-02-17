@@ -18,6 +18,8 @@ from io import BytesIO
 from PIL import Image
 import cv2
 import base64
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 #import requests
@@ -73,7 +75,15 @@ IMG_STD = [1, 1, 1]
 INPUT_SIZE = 64
 OUTPUT_STRIDE = 8
 
-@app.post("/pp")
+@app.get("/api/home")
+async def read_main():
+    return {"msg": "Hello World"}
+
+@app.get("/api/")
+async def hello():
+    return {"result": "Welcome to Maize Tassel Counting Default"}
+
+@app.post("/api/pp")
 async def pp(
     input: Item
 ):
@@ -91,7 +101,9 @@ async def pp(
     image = zero_padding_image(image)
 
     #Regression Implementation
-    model = torch.load('whole_model.pt')
+    model = CountingModels(arc='tasselnetv2', input_size=64, output_stride=8)
+    model = nn.DataParallel(model)
+    model.load_state_dict(torch.load('density_model.pt'))
     model.eval()
     with torch.no_grad():
         output = model(image, is_normalize=False)
@@ -161,7 +173,7 @@ async def pp(
     }
 
 
-@app.post("/predict")
+@app.post("/api/predict")
 async def predict(
         file: UploadFile = File(...)
 ):
@@ -179,7 +191,9 @@ async def predict(
     image = zero_padding_image(image)
 
     # load model
-    model = torch.load('whole_model.pt')
+    model = CountingModels(arc='tasselnetv2', input_size=64, output_stride=8)
+    model = nn.DataParallel(model)
+    model.load_state_dict(torch.load('density_model.pt'))
     model.eval()
     with torch.no_grad():
         output = model(image, is_normalize=False)
@@ -248,7 +262,7 @@ async def predict(
     }
 
 
-@app.post("/testArray")
+@app.post("/api/testArray")
 async def predict(
         files: List[UploadFile] = File(...)
 ):
@@ -278,7 +292,9 @@ async def predict(
         image = zero_padding_image(image)
 
         # load model
-        model = torch.load('whole_model.pt')
+        model = CountingModels(arc='tasselnetv2', input_size=64, output_stride=8)
+        model = nn.DataParallel(model)
+        model.load_state_dict(torch.load('density_model.pt'))
         model.eval()
         with torch.no_grad():
             output = model(image, is_normalize=False)
